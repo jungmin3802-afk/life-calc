@@ -54,8 +54,8 @@ function lunarToSolar(m,d,leap,Y){
  return BC[k]=best||''}
 function bdaySolar(e,Y){
  if(e.cal==='lunar')return lunarToSolar(e.m,e.d,e.leap,Y);
- var d=e.d;if(e.m===2&&d===29&&new Date(Y,1,29).getMonth()!==1)d=28;
- return Y+'-'+pad(e.m)+'-'+pad(d)}
+ if(new Date(Y,e.m-1,e.d).getMonth()!==e.m-1)return '';
+ return Y+'-'+pad(e.m)+'-'+pad(e.d)}
 function bdayOn(e,s){var Y=+s.slice(0,4);if(e.y&&Y<e.y)return false;return bdaySolar(e,Y)===s}
 function evSub(e,s){
  if(e.type==='bday'){var Y=+s.slice(0,4),a=[];
