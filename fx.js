@@ -18,7 +18,7 @@ function calc(){
  var a=parseFloat(amt.value.replace(/,/g,''));
  if(!isFinite(a)){tb.innerHTML='';return}
  var f=from.value,t=to.value,v=a/rateOf(f)*rateOf(t),one=1/rateOf(f)*rateOf(t);
- tb.innerHTML='<tr class="b"><td>'+fmt(a,f)+' '+f+'</td><td>'+fmt(v,t)+' '+t+'</td></tr><tr><td>적용 환율</td><td>1 '+f+' = '+one.toLocaleString('ko-KR',{maximumFractionDigits:6})+' '+t+'</td></tr>';
+ tb.innerHTML='<tr class="b"><td>'+fmt(a,f)+' '+f+'</td><td>'+fmt(v,t)+' '+t+'</td></tr><tr><td>적용 환율</td><td>1 '+f+' = '+one.toLocaleString('ko-KR',{maximumFractionDigits:one>=100?2:one>=1?4:6})+' '+t+'</td></tr>';
  nt.textContent='국제 기준 환율 기준이며 은행·환전소의 실제 매매 환율과 수수료는 다릅니다. '+stamp()}
 function table(){
  var h='';CUR.slice(1).forEach(function(c){var u=c[2],v=u/R[c[0]];
