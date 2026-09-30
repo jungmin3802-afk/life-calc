@@ -173,8 +173,8 @@ function netM(sal){var mo=sal/12,pB=Math.min(Math.max(mo,410000),6590000),pen=pB
  var lim=sal<=33e6?74e4:sal<=70e6?Math.max(66e4,74e4-(sal-33e6)*0.008):sal<=120e6?Math.max(5e5,66e4-(sal-70e6)*0.5):Math.max(2e5,5e5-(sal-120e6)*0.5);
  cr=Math.min(cr,lim)+130000;var it=Math.max(0,ct-cr)/12,lt=it*0.1;return {ins:pen+hea+car+emp,tax:it+lt,net:mo-pen-hea-car-emp-it-lt}}
 var wi=C.findIndex(function(c){return c.k==='wage'});
-C[wi]={k:'wage',n:'시급·월급',nt:'주 15시간 이상 근무 시 주휴수당이 발생합니다. 세후는 4대보험·소득세를 뺀 간이 계산(부양가족 본인 1명, 비과세 식대 없음)이며 실제 급여명세서와 다를 수 있습니다.',
- f:[['x','결과 기준','sel',['세전','세후 (4대보험)','세후 (3.3% 공제)']],['w','시급 (원)','num',MIN],['h','주 근무시간','num',40]],
+C[wi]={k:'wage',n:'시급·월급',nt:'주 15시간 이상 근무 시 주휴수당이 발생합니다. '세후'는 4대보험·소득세를 뺀 간이 계산(부양가족 본인 1명, 비과세 식대 없음), '세후 3.3%'는 프리랜서 원천징수 기준이며 실제 급여명세서와 다를 수 있습니다.',
+ f:[['x','결과 기준','sel',['세전','세후','세후 3.3%']],['w','시급 (원)','num',MIN],['h','주 근무시간','num',40]],
  run:function(v){if(!v.w||!v.h)return null;var ho=v.h>=15?Math.min(v.h,40)/40*8:0,m=(v.h+ho)*365/7/12,g=v.w*m;
   var h=[['주휴수당 (주)',won(v.w*ho)],['월 환산 근로시간',m.toFixed(1)+'시간']];
   if(v.x==0)return h.concat([['월급 (세전)',won(g),1],['연봉 환산 (세전)',won(g*12)]]);

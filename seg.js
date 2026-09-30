@@ -2,7 +2,7 @@
 var desc=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value');
 function cols(o){var n=o.length,m=0;o.forEach(function(x){m=Math.max(m,x.t.length)});
  if(o.some(function(x){return x.s}))return n<=4?n:n>9?4:3;
- if(n<=3&&m<=9)return n;if(m<=5)return 4;if(m<=8)return 3;if(m<=18)return 2;return 1}
+ if(n<=3&&m<=12)return n;if(m<=5)return 4;if(m<=8)return 3;if(m<=18)return 2;return 1}
 function up(sel){
  if(sel.getAttribute('data-sg')||sel.hasAttribute('data-plain')||sel.options.length>16||sel.options.length<2)return;
  sel.setAttribute('data-sg','1');
