@@ -132,4 +132,8 @@ function check(){
 $('cnoti').onclick=function(){S.ask(function(p){var m=p==='granted'?'알림이 켜졌습니다. 이 페이지가 열려 있을 때 시간에 맞춰 울립니다.':p==='unsupported'?'이 브라우저는 알림을 지원하지 않아요. 화면 안 알림과 폰 캘린더(.ics)를 이용해 주세요.':'알림이 차단되었습니다. 브라우저 설정에서 허용해 주세요.';$('cnmsg').textContent=m;})};
 if(!S.persistent())$('cwarn').hidden=false;
 all();check();setInterval(check,20000);document.addEventListener('visibilitychange',function(){if(!document.hidden){today=new Date();check()}});
+$('cshare').onclick=function(){S.share('cal','우리 일정 공유',{events:D.events,diary:{}})};
+S.incoming('cal').then(function(o){if(!o||!o.events)return;S.clearHash();
+ var n=o.events.filter(function(e){return !D.events.some(function(x){return x.id===e.id})});
+ if(confirm('공유받은 일정을 합칠까요?\n(새 일정 '+n.length+'개 추가, 내 일정은 그대로 유지)')){D.events=D.events.concat(n);save();all();S.notify('합치기 완료','일정 '+n.length+'개를 추가했어요')}});
 })();

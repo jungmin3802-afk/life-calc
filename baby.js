@@ -120,6 +120,12 @@ function check(){
  D.babies.forEach(function(b){var lf=mine(b.id).filter(function(l){return l.k==='formula'||l.k==='breast'})[0];
   if(lf&&now>=lf.t+D.gap*6e4&&now<lf.t+D.gap*6e4+3*36e5&&!F[lf.id]){F[lf.id]=now;ch=true;S.notify('🍼 '+b.name+' 수유 시간이에요','마지막 수유 '+hm(lf.t)+' · '+dur(now-lf.t)+' 지났어요')}});
  if(ch){var k={};Object.keys(F).forEach(function(x){if(now-F[x]<3*864e5)k[x]=F[x]});S.set('lc_baby_fired',k)}}
+$('bshare').onclick=function(){var lim=Date.now()-30*864e5;S.share('baby','우리 아기 육아 기록',{babies:D.babies,logs:D.logs.filter(function(l){return l.t>=lim}),sleep:D.sleep})};
+S.incoming('baby').then(function(o){if(!o||!o.babies)return;S.clearHash();
+ var n=(o.logs||[]).filter(function(l){return !D.logs.some(function(x){return x.id===l.id})});
+ if(confirm('공유받은 육아 기록을 합칠까요?\n(새 기록 '+n.length+'개 추가, 내 기록은 그대로 유지)')){
+  o.babies.forEach(function(b){if(!D.babies.some(function(x){return x.id===b.id}))D.babies.push(b)});
+  D.logs=D.logs.concat(n);save();all();S.notify('합치기 완료','기록 '+n.length+'개를 추가했어요')}});
 if(!S.persistent())$('bwarn').hidden=false;
 all();check();setInterval(function(){drawStatus();check()},20000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){drawStatus();check()}});
