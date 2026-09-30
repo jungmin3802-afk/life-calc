@@ -50,9 +50,8 @@ function lunarToSolar(m,d,leap,Y){
   if(+o.relatedYear!==Y)continue;
   var isL=/bis$/.test(o.month),mm=parseInt(o.month,10),dd=+o.day;
   if(mm!==m)continue;
-  if(isL===!!leap){if(dd<=d&&dd>bd){bd=dd;best=ymd(t)}}
-  else if(!isL&&dd<=d&&dd>altd){altd=dd;alt=ymd(t)}}
- return BC[k]=best||alt||''}
+  if(isL===!!leap&&dd===d)best=ymd(t)}
+ return BC[k]=best||''}
 function bdaySolar(e,Y){
  if(e.cal==='lunar')return lunarToSolar(e.m,e.d,e.leap,Y);
  var d=e.d;if(e.m===2&&d===29&&new Date(Y,1,29).getMonth()!==1)d=28;
