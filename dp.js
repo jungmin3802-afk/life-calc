@@ -8,7 +8,7 @@ var css='.dpb{display:flex;align-items:center;justify-content:space-between;gap:
 +'.qc{display:flex;gap:6px;overflow-x:auto;padding:12px 16px 4px}.qc button{margin:0;flex-shrink:0;padding:8px 14px;border:0;border-radius:20px;background:color-mix(in srgb,#F43F5E 10%,var(--bg));color:#E11D48;font-size:.88rem;font-weight:700;cursor:pointer}.qc button:active{transform:scale(.94)}'
 +'.sps{display:grid;gap:10px;padding:12px 16px 4px}.sps.c3{grid-template-columns:repeat(3,1fr)}.sps.c2{grid-template-columns:repeat(2,1fr)}'
 +'.sp{background:var(--bg);border-radius:20px;padding:6px 4px;text-align:center}.sp>small{display:block;color:var(--sub);font-size:.75rem;font-weight:600;margin-top:2px}'
-+'.sp button{margin:0;width:100%;border:0;background:none;cursor:pointer;color:inherit;font-family:inherit}.sp .st2{height:38px;color:#F43F5E;font-size:1.3rem;font-weight:800}.sp .st2:active{transform:scale(.85)}.sp .nm2{font-size:1.75rem;font-weight:800;line-height:1.3;padding:2px 0;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.sp .nm2 em{font-size:.9rem;font-style:normal;color:var(--sub);font-weight:600;margin-left:1px}'
++'.sp button{margin:0;width:100%;border:0;background:none;cursor:pointer;color:inherit;font-family:inherit}.sp .st2{height:38px;color:#F43F5E;font-size:1.3rem;font-weight:800}.sp .st2:active{transform:scale(.85)}.sp .nm2{touch-action:none;user-select:none;-webkit-user-select:none;cursor:ns-resize;font-size:1.75rem;font-weight:800;line-height:1.3;padding:2px 0;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.sp .nm2 em{font-size:.9rem;font-style:normal;color:var(--sub);font-weight:600;margin-left:1px}'
 +'.pkh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 4px}.pkh b{font-size:1rem}.pkh button{margin:0;border:0;background:none;color:#E11D48;font-weight:700;font-size:.95rem;cursor:pointer}'
 +'.pg{display:grid;gap:8px;padding:8px 16px}.pg button{margin:0;min-height:46px;padding:0;border:0;border-radius:14px;background:var(--bg);color:var(--ink);font-size:1rem;font-weight:700;cursor:pointer;font-family:inherit}.pg button.on{background:linear-gradient(135deg,#FB7185,#F43F5E);color:#fff;box-shadow:0 4px 12px rgba(244,63,94,.35)}.pg button:active{transform:scale(.94)}'
 +'.dft{display:flex;gap:8px;padding:10px 16px 0}.dft button{margin:0;min-height:50px;border:0;border-radius:16px;background:var(--bg);color:var(--sub);font-size:1rem;font-weight:600;cursor:pointer;padding:0 18px}.dft .ok{flex:1;background:linear-gradient(135deg,#FB7185,#F43F5E);color:#fff;font-weight:800;box-shadow:0 6px 16px rgba(244,63,94,.35)}';
@@ -45,7 +45,7 @@ function open(inp,btn){
  function fix(){D=Math.min(D,dim(Y,Mo))}
  function commit(){var v=hasD?Y+'-'+pad(Mo+1)+'-'+pad(D):'';if(hasT)v=(hasD?v+'T':'')+pad(H)+':'+pad(Mi);inp.value=v;fire(inp);refresh(btn);close()}
  function shift(days){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+days);Y=d.getFullYear();Mo=d.getMonth();D=d.getDate()}
- function stp(k,label,val,unit){return '<div class="sp"><button type="button" class="st2" data-s="'+k+'" data-v="1" aria-label="'+label+' 올리기">▲</button><button type="button" class="nm2" data-p="'+k+'">'+val+'<em>'+unit+'</em></button><button type="button" class="st2" data-s="'+k+'" data-v="-1" aria-label="'+label+' 내리기">▼</button><small>'+label+'</small></div>'}
+ function stp(k,label,val,unit){return '<div class="sp"><button type="button" class="st2" data-s="'+k+'" data-v="1" aria-label="'+label+' 올리기">▲</button><button type="button" class="nm2" data-p="'+k+'">'+val+'</button><button type="button" class="st2" data-s="'+k+'" data-v="-1" aria-label="'+label+' 내리기">▼</button><small>'+label+'</small></div>'}
  function head(){var h='';if(hasD){h='<small>'+Y+'년</small><b>'+(Mo+1)+'월 '+D+'일 '+W[new Date(Y,Mo,D).getDay()]+'요일'+(hasT?' · '+(H<12?'오전 ':'오후 ')+(H%12||12)+':'+pad(Mi):'')+'</b>'}else h='<small>시간 선택</small><b>'+(H<12?'오전 ':'오후 ')+(H%12||12)+':'+pad(Mi)+'</b>';return '<div class="hd">'+h+'</div>'}
  function draw(){var h=head();
   if(pk){var lab={y:'년도',m:'월',d:'일',H:'시',i:'분'}[pk],g='';
@@ -58,14 +58,25 @@ function open(inp,btn){
    else{h+='<div class="pg" style="grid-template-columns:repeat(6,1fr)">';for(var j=0;j<60;j+=5)h+='<button type="button" data-k="'+j+'"'+(j===Mi?' class="on"':'')+'>'+pad(j)+'</button>';h+='</div>'}
   }else{
    if(hasD)h+='<div class="qc"><button type="button" data-q="0">오늘</button><button type="button" data-q="-1">어제</button><button type="button" data-q="-7">일주일 전</button><button type="button" data-q="-30">30일 전</button><button type="button" data-q="-100">100일 전</button><button type="button" data-q="-365">1년 전</button><button type="button" data-q="1">내일</button></div>';
-   if(hasD)h+='<div class="sps c3">'+stp('y','년',Y,'')+stp('m','월',Mo+1,'')+stp('d','일',D,'')+'</div>';
+   h+='<p style="text-align:center;margin:10px 0 0;font-size:.8rem;color:var(--sub)">숫자를 위아래로 밀거나 ▲▼를 누르세요 · 숫자를 톡 누르면 목록이 나와요</p>';if(hasD)h+='<div class="sps c3">'+stp('y','년',Y,'')+stp('m','월',Mo+1,'')+stp('d','일',D,'')+'</div>';
    if(hasT)h+='<div class="sps c2">'+stp('H','시',pad(H),'')+stp('i','분',pad(Mi),'')+'</div>';
    h+='<div class="dft"><button type="button" data-a="x">닫기</button>'+(hasD&&t==='date'&&inp.value?'<button type="button" data-a="clr">지우기</button>':'')+'<button type="button" class="ok" data-a="ok">완료</button></div>'}
   s.innerHTML=h}
+ function step(k,v){
+  if(k==='y')Y+=v;else if(k==='m'){Mo+=v;while(Mo>11){Mo-=12;Y++}while(Mo<0){Mo+=12;Y--}}else if(k==='d'){var n=dim(Y,Mo);D=((D-1+v)%n+n)%n+1}
+  else if(k==='H')H=((H+v)%24+24)%24;else Mi=((Mi+v*5)%60+60)%60;fix()}
+ function live(){var hd=s.querySelector('.hd');if(hd)hd.outerHTML=head();
+  var V={y:Y,m:Mo+1,d:D,H:pad(H),i:pad(Mi)};[].forEach.call(s.querySelectorAll('.nm2'),function(el){el.firstChild.nodeValue=V[el.getAttribute('data-p')]})}
+ var drag=null,moved=false;
+ s.addEventListener('pointerdown',function(e){var n=e.target.closest('.nm2');if(!n)return;drag={k:n.getAttribute('data-p'),y:e.clientY,acc:0};moved=false;try{n.setPointerCapture(e.pointerId)}catch(_){}});
+ s.addEventListener('pointermove',function(e){if(!drag)return;var dy=e.clientY-drag.y;if(Math.abs(dy)>6)moved=true;if(!moved)return;
+  var st=Math.trunc(-dy/26)-drag.acc;if(st){step(drag.k,st);drag.acc+=st;live()}});
+ function endDrag(){drag=null;setTimeout(function(){moved=false},0)}
+ s.addEventListener('pointerup',endDrag);s.addEventListener('pointercancel',endDrag);
+ s.addEventListener('wheel',function(e){var n=e.target.closest('.nm2');if(!n)return;e.preventDefault();step(n.getAttribute('data-p'),e.deltaY<0?1:-1);live()},{passive:false});
  s.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
-  if(b.hasAttribute('data-s')){var k=b.getAttribute('data-s'),v=+b.getAttribute('data-v');
-   if(k==='y')Y+=v;else if(k==='m'){Mo+=v;if(Mo>11){Mo=0;Y++}if(Mo<0){Mo=11;Y--}}else if(k==='d'){D+=v;var n=dim(Y,Mo);if(D>n)D=1;if(D<1)D=n}
-   else if(k==='H')H=(H+v+24)%24;else Mi=(Mi+v*5+60)%60;fix();draw();return}
+  if(moved&&b.classList.contains('nm2')){return}
+  if(b.hasAttribute('data-s')){step(b.getAttribute('data-s'),+b.getAttribute('data-v'));draw();return}
   if(b.hasAttribute('data-p')){pk=b.getAttribute('data-p');if(pk==='y')yb=Y-9;draw();return}
   if(b.hasAttribute('data-k')){var x=+b.getAttribute('data-k');if(pk==='y')Y=x;else if(pk==='m')Mo=x;else if(pk==='d')D=x;else if(pk==='H')H=x;else Mi=x;fix();pk=null;draw();return}
   if(b.hasAttribute('data-q')){shift(+b.getAttribute('data-q'));draw();return}
