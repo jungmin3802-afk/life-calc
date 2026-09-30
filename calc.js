@@ -173,6 +173,28 @@ s('datecalc',function(v){return v.m==1?['n','g']:['d2']});
 s('broker',function(v){return v.t==1?[]:['m']});
 })();
 
+C.push(
+{k:'compound',n:'복리·목표금액 적금',nt:'매월 말에 저축하고 수익이 매월 복리로 붙는다고 가정한 참고용 계산입니다. 실제 금융상품의 이자 방식과 세금은 다를 수 있습니다.',
+ f:[['t','계산 종류','sel',['만기 금액 구하기','목표 금액 달성 월 저축액']],['m','월 저축액 (원)','num'],['g','목표 금액 (원)','num'],['p','처음 넣는 금액 (원)','num',0],['r','연 수익률 (%)','num',5],['y','기간 (년)','num',10]],
+ run:function(v){var y=v.y,r=(v.r||0)/1200,n=Math.round(y*12),p=v.p||0;if(!(n>0))return null;
+  var g=r?Math.pow(1+r,n):1,pf=p*g,ann=r?(g-1)/r:n;
+  if(v.t==0){if(!v.m&&!p)return null;var m=v.m||0,fv=pf+m*ann,pr=p+m*n,gain=fv-pr;
+   return[['납입 원금',won(pr)],['예상 수익 (세전)',won(gain)],['만기 금액 (세전)',won(fv),1],['만기 금액 (세후, 이자세 15.4% 가정)',won(pr+gain*0.846)]]}
+  if(!v.g)return null;var need=(v.g-pf)/ann;if(need<=0)return[['안내','처음 넣는 금액만으로 이미 목표에 도달합니다'],['목표 도달 예상 금액',won(pf),1]];
+  return[['필요한 월 저축액',won(need),1],['총 납입 원금',won(p+need*n)],['예상 수익 (세전)',won(v.g-p-need*n)]]}},
+{k:'dsr',n:'DSR 대출 가능 금액',nt:'연소득 대비 원리금 상환 비율(DSR) 한도 안에서 원리금균등상환 대출을 받을 수 있는 금액의 간이 계산입니다. 실제 심사 결과와 다릅니다.',
+ f:[['a','연소득 (원)','num'],['e','기존 대출 연간 원리금 상환액 (원)','num',0],['l','DSR 한도','sel',['은행권 40%','비은행권 50%']],['r','신규 대출 금리 (연 %)','num',4.5],['s','스트레스 가산금리 (%p)','num',0],['y','대출 기간 (년)','num',30]],
+ run:function(v){if(!v.a||!v.y)return null;var lim=v.l==1?0.5:0.4,cap=v.a*lim-(v.e||0);
+  if(cap<=0)return[['DSR 한도 여유','없음'],['안내','기존 상환액이 한도를 넘어 신규 대출이 어려울 수 있습니다',1]];
+  var i=((v.r||0)+(v.s||0))/1200,n=Math.round(v.y*12),pm=cap/12,pr=i?pm*(1-Math.pow(1+i,-n))/i:pm*n;
+  return[['DSR 한도 ('+Math.round(lim*100)+'%) 연 상환액',won(v.a*lim)],['신규 대출에 쓸 수 있는 연 상환액',won(cap)],['월 상환 가능액',won(pm)],['대출 가능 금액 (참고)',won(pr),1]]}},
+{k:'cartax',n:'자동차세',nt:'비영업용 승용차 기준의 간이 계산입니다. 전기차, 경차 혜택, 연납 공제 등은 반영하지 않았습니다. 정확한 금액은 위택스에서 확인하세요.',
+ f:[['c','배기량 (cc)','num'],['a','차령 (등록 후 경과 연수)','num',1]],
+ run:function(v){if(!v.c)return null;var rate=v.c<=1000?80:v.c<=1600?140:200,base=v.c*rate,a=v.a||0,red=a>=3?Math.min(50,(a-2)*5):0,tax=base*(1-red/100),edu=tax*0.3,tot=tax+edu;
+  return[['cc당 세율',rate+'원'],['기본 자동차세 (연)',won(base)],['차령 감면',red+'%'],['자동차세 (연)',won(tax)],['지방교육세 (30%)',won(edu)],['연간 합계',won(tot),1],['6월·12월 각 납부액',won(tot/2)]]}}
+);
+(function(){var c=C.find(function(x){return x.k==='compound'});c.vis=function(v){return v.t==0?['g']:['m']}})();
+
 var cur=C.findIndex(function(c){return c.k===window.CALC_KEY});var c=C[cur];
 function build(){var h='';
  document.getElementById('nt').textContent=c.nt;

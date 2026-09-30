@@ -23,27 +23,31 @@ function drawStatus(){
  var L=mine(cur),now=Date.now(),h='';
  var lf=L.filter(function(l){return l.k==='formula'||l.k==='breast'})[0];
  if(lf){var next=lf.t+D.gap*6e4,left=next-now;
-  h+='<div class="st"><span>마지막 수유</span><b>'+dur(now-lf.t)+' 전</b><small>'+hm(lf.t)+' · '+TY[lf.k][1]+' '+lf.v+TY[lf.k][2]+'</small></div>';
-  h+='<div class="st"><span>다음 수유 예정</span><b>'+hm(next)+'</b><small>'+(left>0?dur(left)+' 남음':'<em>'+dur(-left)+' 지났어요</em>')+'</small></div>'}
- else h+='<div class="st"><span>수유 기록</span><b>아직 없어요</b><small>아래에서 첫 기록을 남겨보세요</small></div>';
+  h+='<div class="hl">🍼 마지막 수유</div><div class="hb">'+dur(now-lf.t)+' 전</div><div class="hs">'+hm(lf.t)+' · '+TY[lf.k][1]+' '+lf.v+TY[lf.k][2]+'</div>';
+  h+='<div class="hx">다음 수유 <b>'+hm(next)+'</b> · '+(left>0?dur(left)+' 남음':'<em>'+dur(-left)+' 지났어요</em>')+'</div>'}
+ else h+='<div class="hl">🍼 수유</div><div class="hb">기록 없음</div><div class="hs">아래 분유 버튼을 눌러 첫 기록을 남겨보세요</div>';
  var sl=D.sleep[cur];
- if(sl)h+='<div class="st sl"><span>😴 자는 중</span><b>'+dur(now-sl)+'</b><small>'+hm(sl)+' 시작</small></div>';
+ if(sl)h+='<div class="hz">😴 자는 중 · <b>'+dur(now-sl)+'</b> ('+hm(sl)+' 시작)</div>';
  $('bstat').innerHTML=h;
- $('bsleepbtn').textContent=sl?'☀️ 깼어요 (수면 종료)':'😴 잠들었어요 (수면 시작)'}
+ var st=$('bslt');if(st){st.className='qt'+(sl?' on':'');st.innerHTML='<span>'+(sl?'☀️':'😴')+'</span>'+(sl?'깼어요':'잠들었어요')+'<small>'+(sl?dur(now-sl)+' 째':'수면 시작')+'</small>'}}
 // 입력폼
+var flash='';
 function drawForm(){
- $('btypes').innerHTML=Object.keys(TY).map(function(k){return '<button type="button" class="tp'+(k===type?' on':'')+'" data-t="'+k+'"><span>'+TY[k][0]+'</span>'+TY[k][1]+'</button>'}).join('');
- var h='',u=TY[type][2];
- $('bsleepbox').hidden=type!=='sleep';$('bfields').hidden=type==='sleep';
- if(type==='diaper'){h+='<label>종류</label><div class="seg" id="bdi"><button type="button" data-v="소변" class="on">💧 소변</button><button type="button" data-v="대변">💩 대변</button><button type="button" data-v="소변+대변">둘 다</button></div>'}
- else if(type==='med'||type==='note'){h+='<label for="bnote">'+(type==='med'?'약 이름·용량':'내용')+'</label><input id="bnote" maxlength="80" autocomplete="off">'}
- else if(type!=='sleep'){
+ var P=['formula','diaper'],O=['breast','food','temp','med','note'],sl=D.sleep[cur];
+ $('btypes').innerHTML=P.map(function(k){return '<button type="button" class="qt'+(k===type?' on':'')+'" data-t="'+k+'"><span>'+TY[k][0]+'</span>'+TY[k][1]+'</button>'}).join('')+'<button type="button" class="qt" id="bslt" data-t="sleep"></button>';
+ $('bmore').innerHTML=O.map(function(k){return '<button type="button" class="chip'+(k===type?' on':'')+'" data-t="'+k+'">'+TY[k][0]+' '+TY[k][1]+'</button>'}).join('');
+ var h=flash?'<div class="ok">✓ '+flash+'</div>':'',u=TY[type][2];
+ var tm='<details id="bdet"><summary>🕒 시간 바꾸기 (지금이 아니라면)</summary><input id="bt" type="datetime-local" value="'+dtv(Date.now())+'"></details>';
+ if(type==='diaper'){h+='<label>기저귀 종류 (누르면 바로 기록)</label><div class="big d2" id="bdi"><button type="button" data-d="소변">💧<br>소변</button><button type="button" data-d="대변">💩<br>대변</button><button type="button" data-d="소변+대변">💧💩<br>둘 다</button></div>'+tm}
+ else if(type==='med'||type==='note'){h+='<label for="bnote">'+(type==='med'?'약 이름·용량':'내용')+'</label><input id="bnote" maxlength="80" autocomplete="off">'+tm+'<button type="button" id="brec">'+TY[type][0]+' 기록하기</button>'}
+ else{
   var last=mine(cur).filter(function(l){return l.k===type})[0],dv=type==='temp'?'36.5':last?last.v:'';
-  h+='<label for="bv">'+TY[type][1]+' ('+u+')</label><input id="bv" inputmode="decimal" value="'+dv+'" autocomplete="off">';
-  if(CHIPS[type])h+='<div class="chips">'+CHIPS[type].map(function(c){return '<button type="button" class="chip" data-c="'+c+'">'+c+'</button>'}).join('')+'</div>';
-  if(type==='formula')h+='<label for="bnote">메모 (선택)</label><input id="bnote" maxlength="40" placeholder="예: 다 먹음, 반 남김" autocomplete="off">'}
- if(type!=='sleep')h+='<label for="bt">시간</label><input id="bt" type="datetime-local" value="'+dtv(Date.now())+'"><button type="button" id="brec">'+TY[type][0]+' 기록하기</button>';
- $('bfields').innerHTML=h}
+  if(CHIPS[type]){h+='<label>'+TY[type][1]+' 양 ('+u+') · 누르면 바로 기록</label><div class="big">'+CHIPS[type].map(function(c){return '<button type="button" data-c="'+c+'"'+(last&&+last.v===c?' class="last"':'')+'>'+c+'</button>'}).join('')+'</div><label for="bv">직접 입력</label>'}
+  else h+='<label for="bv">'+TY[type][1]+' ('+u+')</label>';
+  h+='<input id="bv" inputmode="decimal" value="'+dv+'" autocomplete="off">';
+  if(type==='formula')h+='<details><summary>📝 메모 남기기</summary><input id="bnote" maxlength="40" placeholder="예: 다 먹음, 반 남김" autocomplete="off"></details>';
+  h+=tm+'<button type="button" id="brec">'+TY[type][0]+' 기록하기</button>'}
+ $('bfields').innerHTML=h;drawStatus()}
 // 오늘 기록
 function drawLog(){
  var s0=dayStart(day),s1=s0+864e5,L=mine(cur).filter(function(l){return l.t>=s0&&l.t<s1}).sort(function(a,b){return a.t-b.t});
@@ -52,12 +56,13 @@ function drawLog(){
  var f=0,fc=0,bm=0,fd=0,pe=0,po=0,sl=0,mx=0;
  L.forEach(function(l){if(l.k==='formula'){f+=+l.v||0;fc++}if(l.k==='breast')bm+=+l.v||0;if(l.k==='food')fd+=+l.v||0;
   if(l.k==='diaper'){if(/소변/.test(l.v))pe++;if(/대변/.test(l.v))po++}if(l.k==='sleep')sl+=(+l.e||0)-l.t;if(l.k==='temp')mx=Math.max(mx,+l.v||0)});
- var sum=[['🍼 분유',f+'ml ('+fc+'회)'],['🤱 모유',bm+'분'],['🥣 이유식',fd+'g'],['💧 소변 / 💩 대변',pe+'회 / '+po+'회'],['😴 수면',dur(sl)]];
- if(mx)sum.push(['🌡️ 최고 체온',mx+'℃']);
+ var sum=[['🍼 분유',f+'ml · '+fc+'회'],['🧷 소변/대변',pe+' / '+po],['😴 수면',sl?dur(sl):'-']];
+ if(bm)sum.push(['🤱 모유',bm+'분']);if(fd)sum.push(['🥣 이유식',fd+'g']);if(mx)sum.push(['🌡️ 체온',mx+'℃']);
  $('bsum').innerHTML=sum.map(function(x){return '<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join('');
  $('blog').innerHTML=L.length?L.map(function(l){var t=TY[l.k];
-  var d=l.k==='sleep'?(l.e?hm(l.t)+' → '+hm(l.e)+' ('+dur(l.e-l.t)+')':hm(l.t)+' → 자는 중'):l.k==='diaper'?l.v:l.k==='med'||l.k==='note'?esc(l.n||''):l.v+t[2]+(l.n?' · '+esc(l.n):'');
-  return '<div class="lg"><span class="lt">'+(l.k==='sleep'?hm(l.t):hm(l.t))+'</span><span class="li">'+t[0]+'</span><span class="ld"><b>'+t[1]+'</b> '+d+'</span><button type="button" class="x" data-x="'+l.id+'" aria-label="삭제">×</button></div>'}).join(''):'<p class="note">이 날의 기록이 없습니다.</p>';
+  var d=l.k==='sleep'?(l.e?dur(l.e-l.t)+' 잠':'자는 중'):l.k==='diaper'?l.v:l.k==='med'||l.k==='note'?esc(l.n||''):l.v+t[2];
+  var sub=l.k==='sleep'&&l.e?hm(l.t)+' → '+hm(l.e):(l.n&&l.k!=='med'&&l.k!=='note'?esc(l.n):t[1]);
+  return '<div class="lg"><span class="lt">'+hm(l.t)+'</span><span class="li k-'+l.k+'">'+t[0]+'</span><span class="ld"><b>'+d+'</b><small>'+sub+'</small></span><button type="button" class="x" data-x="'+l.id+'" aria-label="삭제">×</button></div>'}).join(''):'<p class="note">이 날의 기록이 없습니다.</p>';
  // 7일 분유 그래프
  var days=[],max=1;for(var i=6;i>=0;i--){var d0=dayStart(new Date(day.getFullYear(),day.getMonth(),day.getDate()-i)),v=0;
   mine(cur).forEach(function(l){if(l.k==='formula'&&l.t>=d0&&l.t<d0+864e5)v+=+l.v||0});days.push([new Date(d0),v]);max=Math.max(max,v)}
@@ -69,25 +74,27 @@ function drawSet(){
 // 이벤트
 $('btabs').addEventListener('click',function(e){var b=e.target.closest('[data-b]');if(b){cur=b.getAttribute('data-b');all();return}
  if(e.target.id==='badd'){var n=prompt('아기 이름(애칭)을 입력하세요');if(n&&n.trim()){var id='b'+Date.now().toString(36);D.babies.push({id:id,name:n.trim().slice(0,12)});cur=id;save();all()}}});
-$('btypes').addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(b){type=b.getAttribute('data-t');drawForm()}});
-$('bfields').addEventListener('click',function(e){var c=e.target.closest('[data-c]');if(c){$('bv').value=c.getAttribute('data-c');return}
- var sg=e.target.closest('#bdi button');if(sg){[].forEach.call(sg.parentNode.children,function(x){x.classList.remove('on')});sg.classList.add('on');return}
+function pick(e){var b=e.target.closest('[data-t]');if(!b)return;var t=b.getAttribute('data-t');if(t==='sleep'){toggleSleep();return}type=t;flash='';drawForm()}
+$('btypes').addEventListener('click',pick);$('bmore').addEventListener('click',pick);
+$('bfields').addEventListener('click',function(e){var c=e.target.closest('[data-c]');if(c){$('bv').value=c.getAttribute('data-c');rec();return}
+ var d=e.target.closest('[data-d]');if(d){rec(d.getAttribute('data-d'));return}
  if(e.target.id==='brec')rec()});
-function rec(){
- var t=new Date($('bt').value).getTime();if(isNaN(t))t=Date.now();
+function rec(dv){
+ var det=$('bdet'),t=det&&det.open?new Date($('bt').value).getTime():Date.now();if(isNaN(t))t=Date.now();
  var l={id:'l'+Date.now().toString(36)+Math.floor(Math.random()*1e4),b:cur,t:t,k:type},nt=$('bnote');
- if(type==='diaper')l.v=document.querySelector('#bdi .on').getAttribute('data-v');
+ if(type==='diaper')l.v=dv;
  else if(type==='med'||type==='note'){l.n=nt.value.trim();if(!l.n){nt.focus();return}}
  else{var v=parseFloat(($('bv').value||'').replace(',','.'));if(!(v>0)){$('bv').focus();return}
   if(type==='temp'&&(v<30||v>43)){alert('체온 값을 확인해 주세요 (예: 36.5)');return}l.v=v;if(nt&&nt.value.trim())l.n=nt.value.trim()}
  D.logs.push(l);day=new Date(t);
  if(type==='temp'&&l.v>=38)S.notify('🌡️ 체온 '+l.v+'℃','38℃ 이상이에요. 아기가 3개월 미만이거나 상태가 좋지 않으면 병원에 문의하세요.');
- save();all()}
-$('bsleepbtn').onclick=function(){
+ flash=hm(t)+' '+TY[type][1]+' '+(l.v!==undefined?l.v+TY[type][2]:l.n||'')+' 기록했어요';
+ save();all();flash=''}
+function toggleSleep(){
  var s=D.sleep[cur],now=Date.now();
  if(s){D.logs.push({id:'l'+now.toString(36),b:cur,t:s,e:now,k:'sleep'});delete D.sleep[cur];day=new Date(s)}
  else D.sleep[cur]=now;
- save();all()};
+ save();all()}
 $('blog').addEventListener('click',function(e){var x=e.target.closest('[data-x]');if(x&&confirm('이 기록을 삭제할까요?')){D.logs=D.logs.filter(function(l){return l.id!==x.getAttribute('data-x')});save();all()}});
 $('bprev').onclick=function(){day=new Date(day.getFullYear(),day.getMonth(),day.getDate()-1);drawLog()};
 $('bnext').onclick=function(){day=new Date(day.getFullYear(),day.getMonth(),day.getDate()+1);drawLog()};
