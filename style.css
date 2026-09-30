@@ -215,6 +215,11 @@ details.menu .in a{display:flex;align-items:center}
 .flk{display:grid;grid-template-columns:1fr 1fr;gap:8px}.flk div{background:var(--bg);border-radius:12px;padding:10px 12px}.flk span{display:block;font-size:.78rem;color:var(--sub)}.flk b{display:flex;align-items:center;gap:6px}.dot{width:14px;height:14px;border-radius:50%;border:1px solid var(--line);display:inline-block}
 .ftip{margin-top:14px;background:color-mix(in srgb,var(--fp) 12%,transparent);border-radius:12px;padding:12px}.ftip span{font-weight:700;color:var(--fp)}.ftip p{margin:4px 0 0}
 
+.syc{font-size:1.7rem;font-weight:800;letter-spacing:.06em;text-align:center;color:var(--pk);background:color-mix(in srgb,var(--pk) 10%,var(--bg));border-radius:16px;padding:16px 8px;margin:6px 0;font-variant-numeric:tabular-nums}
+
+.cal #eadd{margin:14px 0 0;width:100%;min-height:52px;border:0;border-radius:16px;background:var(--pk);color:#fff;font-size:1.05rem;font-weight:800;cursor:pointer}.cal #eadd:active{transform:scale(.97)}
+.addev .seg button{min-height:46px}
+
 .gt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
 .gt th,.gt td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
 .gt th{background:var(--bg);font-weight:700}

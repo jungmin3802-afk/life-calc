@@ -28,7 +28,8 @@
 <div class="cg" id="cg"></div></div>
 <div class="card cal" id="cday"></div>
 <div class="card cal"><h3 class="hh" style="margin-top:0">다가오는 일정</h3><div id="cup"></div></div>
-<div class="card cal"><h3 class="hh" style="margin-top:0">👫 일정 공유</h3><p class="note">공유 링크를 카톡·문자로 보내면, 받은 사람이 열어서 [합치기]를 누릅니다. 서로 주고받으면 일정이 같아져요. (일기는 공유되지 않아요)</p><button type="button" class="sh" id="cshare">🔗 일정 공유 링크 보내기</button></div>
+<div class="card cal" id="csync"></div>
+<div class="card cal"><h3 class="hh" style="margin-top:0">👫 링크로 한 번 보내기</h3><p class="note">공유 링크를 카톡·문자로 보내면, 받은 사람이 열어서 [합치기]를 누릅니다. 서로 주고받으면 일정이 같아져요. (일기는 공유되지 않아요)</p><button type="button" class="sh" id="cshare">🔗 일정 공유 링크 보내기</button></div>
 <div class="card cal"><h3 class="hh" style="margin-top:0">알림·백업</h3>
 <button type="button" id="cnoti" class="sh" style="margin-top:0">🔔 기기 알림 허용하기</button><p class="note" id="cnmsg">알림은 이 페이지가 열려 있을 때 울립니다. 브라우저를 닫아도 받고 싶은 일정은 각 일정의 “폰에 추가”로 폰 기본 캘린더에 넣어 두세요.</p>
 <div class="btnrow"><button type="button" class="sec" id="cics">전체 일정 폰에 추가(.ics)</button><button type="button" class="sec" id="cexp">백업 저장</button><label class="sec fl">백업 불러오기<input type="file" id="cimp" accept=".json,application/json" hidden></label></div></div>
@@ -46,6 +47,6 @@
 <script src="dp.js" defer></script>
 <script src="common.js" defer></script>
 
-<script src="store.js"></script><script src="calendar.js"></script>
+<script src="store.js"></script><script src="sync.js"></script><script src="calendar.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "알림은 언제 울리나요?", "acceptedAnswer": {"@type": "Answer", "text": "이 페이지가 열려 있는 동안 정해진 시간에 화면 알림(허용하면 기기 알림)이 울립니다. 브라우저를 닫은 상태에서는 울리지 않으니, 꼭 필요한 일정은 폰에 추가 버튼으로 기본 캘린더에 옮기세요."}}, {"@type": "Question", "name": "일정은 어디에 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "서버로 보내지 않고 사용 중인 기기의 브라우저에만 저장됩니다. 기기를 바꾸거나 브라우저 데이터를 지우면 사라지니 백업 파일을 내려받아 두세요."}}, {"@type": "Question", "name": "공휴일은 정확한가요?", "acceptedAnswer": {"@type": "Answer", "text": "법정 공휴일과 대체공휴일은 자동 계산하지만 임시공휴일과 선거일은 반영하지 않으니 공식 발표를 확인하세요."}}]}</script>
 </body></html>

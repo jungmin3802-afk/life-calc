@@ -22,14 +22,15 @@
 <h1>육아 기록 (분유·수면)</h1>
 <p class="lead">분유 먹인 시간과 양, 기저귀, 수면, 체온을 간편하게 기록하고 다음 수유 시간을 확인하세요. 쌍둥이도 함께 기록할 수 있습니다.</p>
 <p class="note warn" id="bwarn" hidden>이 화면에서는 브라우저 저장이 막혀 있어 기록이 화면을 닫으면 사라집니다. 실제 주소에서는 저장됩니다.</p>
-<div class="chips" id="btabs"></div>
+<div class="chips baby" id="btabs"></div>
 <div class="hero" id="bstat"></div>
 <div class="card baby bx"><div class="qs" id="btypes"></div><div class="mr" id="bmore"></div><div id="bfields"></div></div>
 <div class="card baby"><div class="ch"><button type="button" class="ib" id="bprev" aria-label="이전 날">‹</button><strong id="bdate"></strong><button type="button" class="ib" id="bnext" aria-label="다음 날">›</button></div>
 <div class="sum" id="bsum"></div><div id="blog"></div>
 <button type="button" class="sh" id="bcopy">📋 이 날 기록 복사·공유</button></div>
 <div class="card baby"><h3 class="hh" style="margin-top:0">최근 7일 분유량 (ml)</h3><div class="bars" id="bchart"></div></div>
-<div class="card baby"><h3 class="hh" style="margin-top:0">👨‍👩‍👧 가족과 공유</h3><p class="note">공유 링크를 카톡·문자로 보내면, 받은 사람이 열어서 [합치기]를 누르는 방식이에요. 서로 링크를 주고받으면 양쪽 기록이 같아집니다. (최근 30일 기록)</p><button type="button" class="sh" id="bshare">🔗 공유 링크 보내기</button></div>
+<div class="card baby" id="bsync"></div>
+<div class="card baby"><h3 class="hh" style="margin-top:0">👨‍👩‍👧 링크로 한 번 보내기</h3><p class="note">공유 링크를 카톡·문자로 보내면, 받은 사람이 열어서 [합치기]를 누르는 방식이에요. 서로 링크를 주고받으면 양쪽 기록이 같아집니다. (최근 30일 기록)</p><button type="button" class="sh" id="bshare">🔗 공유 링크 보내기</button></div>
 <details class="card baby setd"><summary>⚙️ 설정 · 백업</summary>
 <label for="bgap">수유 간격</label><select id="bgap"><option value="120">2시간</option><option value="150">2시간 30분</option><option value="180">3시간</option><option value="210">3시간 30분</option><option value="240">4시간</option></select>
 <label class="chk"><input type="checkbox" id="bal"> 수유 시간이 되면 알려주기</label><p class="note" id="bmsg">알림은 이 페이지가 열려 있을 때 울립니다.</p>
@@ -49,6 +50,6 @@
 <script src="dp.js" defer></script>
 <script src="common.js" defer></script>
 
-<script src="store.js"></script><script src="baby.js"></script>
+<script src="store.js"></script><script src="sync.js"></script><script src="baby.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "아기가 여럿이어도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "아기 추가 버튼으로 쌍둥이나 형제를 등록하고 탭으로 바꿔가며 따로 기록할 수 있습니다."}}, {"@type": "Question", "name": "수유 알림은 어떻게 동작하나요?", "acceptedAnswer": {"@type": "Answer", "text": "이 페이지가 열려 있는 동안 마지막 수유로부터 정한 간격이 지나면 알려줍니다. 브라우저를 닫으면 울리지 않으니 필요하면 폰 타이머를 함께 쓰세요."}}, {"@type": "Question", "name": "기록이 다른 폰과 공유되나요?", "acceptedAnswer": {"@type": "Answer", "text": "공유되지 않고 이 기기의 브라우저에만 저장됩니다. 백업 파일을 내려받아 다른 기기에서 불러오거나, 오늘 기록 복사로 가족에게 보낼 수 있습니다."}}, {"@type": "Question", "name": "분유량 권장 기준을 알려주나요?", "acceptedAnswer": {"@type": "Answer", "text": "권장량은 아기마다 달라 안내하지 않습니다. 체온이 38℃ 이상이거나 평소와 다르면 소아과와 상담하세요."}}]}</script>
 </body></html>

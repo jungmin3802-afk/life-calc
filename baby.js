@@ -4,7 +4,7 @@ var KEY='lc_baby';
 var D=S.get(KEY,null);
 if(!D||!D.babies||!D.babies.length)D={babies:[{id:'b1',name:'아기'}],logs:[],gap:180,alarm:false,sleep:{}};
 D.logs=D.logs||[];D.sleep=D.sleep||{};D.gap=D.gap||180;
-function save(){S.set(KEY,D)}
+function save(){S.set(KEY,D);if(window.LCSync)LCSync.kick('baby')}
 var cur=D.babies[0].id,type='formula',day=new Date();
 var TY={formula:['🍼','분유','ml'],breast:['🤱','모유','분'],food:['🥣','이유식','g'],diaper:['🧷','기저귀',''],sleep:['😴','수면',''],temp:['🌡️','체온','℃'],med:['💊','투약',''],note:['📝','메모','']};
 var CHIPS={formula:[60,80,100,120,140,160,180],breast:[5,10,15,20],food:[30,50,80,100]};
@@ -73,7 +73,7 @@ function drawSet(){
  $('bnames').innerHTML=D.babies.map(function(b){return '<div class="nm"><input data-n="'+b.id+'" value="'+esc(b.name)+'" maxlength="12" aria-label="아기 이름"><button type="button" class="sec" data-rm="'+b.id+'">삭제</button></div>'}).join('')}
 // 이벤트
 $('btabs').addEventListener('click',function(e){var b=e.target.closest('[data-b]');if(b){cur=b.getAttribute('data-b');all();return}
- if(e.target.id==='badd'){var n=prompt('아기 이름(애칭)을 입력하세요');if(n&&n.trim()){var id='b'+Date.now().toString(36);D.babies.push({id:id,name:n.trim().slice(0,12)});cur=id;save();all()}}});
+ if(e.target.id==='badd'){var n=prompt('아기 이름(애칭)을 입력하세요');if(n&&n.trim()){var id='b'+Date.now().toString(36);D.babies.push({id:id,name:n.trim().slice(0,12),_u:Date.now()});cur=id;save();all()}}});
 function pick(e){var b=e.target.closest('[data-t]');if(!b)return;var t=b.getAttribute('data-t');if(t==='sleep'){toggleSleep();return}type=t;flash='';drawForm()}
 $('btypes').addEventListener('click',pick);$('bmore').addEventListener('click',pick);
 $('bfields').addEventListener('click',function(e){var c=e.target.closest('[data-c]');if(c){$('bv').value=c.getAttribute('data-c');rec();return}
@@ -100,7 +100,7 @@ $('bprev').onclick=function(){day=new Date(day.getFullYear(),day.getMonth(),day.
 $('bnext').onclick=function(){day=new Date(day.getFullYear(),day.getMonth(),day.getDate()+1);drawLog()};
 $('bgap').onchange=function(){D.gap=+this.value;save();drawStatus()};
 $('bal').onchange=function(){D.alarm=this.checked;save();if(this.checked)S.ask(function(p){$('bmsg').textContent=p==='granted'?'알림 허용됨. 이 페이지가 열려 있을 때 수유 시간에 알려줘요.':'브라우저 알림은 허용되지 않았어요. 화면 안 알림만 표시됩니다.'})};
-$('bnames').addEventListener('change',function(e){var n=e.target.getAttribute('data-n');if(n){var b=D.babies.filter(function(x){return x.id===n})[0];b.name=(e.target.value.trim()||'아기').slice(0,12);save();all()}});
+$('bnames').addEventListener('change',function(e){var n=e.target.getAttribute('data-n');if(n){var b=D.babies.filter(function(x){return x.id===n})[0];b.name=(e.target.value.trim()||'아기').slice(0,12);b._u=Date.now();save();all()}});
 $('bnames').addEventListener('click',function(e){var r=e.target.closest('[data-rm]');if(!r)return;
  if(D.babies.length<2){alert('아기는 최소 1명이 필요해요. 이름을 바꿔서 사용하세요.');return}
  var id=r.getAttribute('data-rm');if(confirm(bname(id)+'의 모든 기록을 삭제할까요?')){D.babies=D.babies.filter(function(b){return b.id!==id});D.logs=D.logs.filter(function(l){return l.b!==id});delete D.sleep[id];if(cur===id)cur=D.babies[0].id;save();all()}});
@@ -126,6 +126,14 @@ S.incoming('baby').then(function(o){if(!o||!o.babies)return;S.clearHash();
  if(confirm('공유받은 육아 기록을 합칠까요?\n(새 기록 '+n.length+'개 추가, 내 기록은 그대로 유지)')){
   o.babies.forEach(function(b){if(!D.babies.some(function(x){return x.id===b.id}))D.babies.push(b)});
   D.logs=D.logs.concat(n);save();all();S.notify('합치기 완료','기록 '+n.length+'개를 추가했어요')}});
+
+if(window.LCSync&&$('bsync'))LCSync.mount($('bsync'),'baby',{
+ get:function(){var lg={},bb={},sl={};D.logs.forEach(function(l){lg[l.id]=l});D.babies.forEach(function(x){bb[x.id]=x});Object.keys(D.sleep).forEach(function(k){sl[k]={t:D.sleep[k],_u:D.sleep[k]}});return {logs:lg,babies:bb,sleep:sl}},
+ set:function(c,m){var ks=Object.keys(m);
+  if(c==='logs')D.logs=ks.map(function(k){return m[k]});
+  else if(c==='babies'){if(ks.length)D.babies=ks.map(function(k){return m[k]});if(!D.babies.some(function(x){return x.id===cur}))cur=D.babies[0].id}
+  else if(c==='sleep'){D.sleep={};ks.forEach(function(k){D.sleep[k]=m[k].t})}},
+ done:function(){S.set(KEY,D);all()}});
 if(!S.persistent())$('bwarn').hidden=false;
 all();check();setInterval(function(){drawStatus();check()},20000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden){drawStatus();check()}});
