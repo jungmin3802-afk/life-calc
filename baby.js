@@ -96,12 +96,14 @@ function rec(dv){
  save();all();flash=''}
 function toggleSleep(){
  var s=D.sleep[cur],now=Date.now();
- if(s){D.logs.push({id:'l'+now.toString(36),b:cur,t:s,e:now,k:'sleep'});delete D.sleep[cur];day=new Date(s)}
- else D.sleep[cur]=now;
- save();all()}
+ if(s){esheet('☀️ 깬 시간',[['깬 시간 (밀어서 바꾸세요)',now]],function(v){if(v[0]<s){S.notify('시간을 확인해 주세요','깬 시간이 잠든 시간보다 늦어야 해요.');return false}
+   if(v[0]>Date.now()+6e4){S.notify('시간을 확인해 주세요','미래 시간은 고를 수 없어요.');return false}
+   D.logs.push({id:'l'+now.toString(36),b:cur,t:s,e:v[0],k:'sleep'});delete D.sleep[cur];day=new Date(s);save();all()},'깼어요')}
+ else esheet('😴 잠든 시간',[['잠든 시간 (밀어서 바꾸세요)',now]],function(v){if(v[0]>Date.now()+6e4){S.notify('시간을 확인해 주세요','미래 시간은 고를 수 없어요.');return false}
+   D.sleep[cur]=v[0];save();all()},'잠들었어요')}
 
-function esheet(title,fields,onsave){var o=document.createElement('div');o.id='beo';var s=document.createElement('div');s.id='bes';
- s.innerHTML='<h3>'+title+'</h3>'+fields.map(function(f,i){return '<label>'+f[0]+'</label><input type="datetime-local" id="bef'+i+'" value="'+dtv(f[1])+'">'}).join('')+'<div class="bea"><button type="button" class="n" id="bec">취소</button><button type="button" class="y" id="bey">저장</button></div>';
+function esheet(title,fields,onsave,yl){var o=document.createElement('div');o.id='beo';var s=document.createElement('div');s.id='bes';
+ s.innerHTML='<h3>'+title+'</h3>'+fields.map(function(f,i){return '<label>'+f[0]+'</label><input type="datetime-local" id="bef'+i+'" value="'+dtv(f[1])+'">'}).join('')+'<div class="bea"><button type="button" class="n" id="bec">취소</button><button type="button" class="y" id="bey">'+(yl||'저장')+'</button></div>';
  o.appendChild(s);document.body.appendChild(o);function cl(){o.remove()}
  o.addEventListener('click',function(e){if(e.target===o)cl()});s.querySelector('#bec').onclick=cl;
  s.querySelector('#bey').onclick=function(){var v=fields.map(function(f,i){return new Date(document.getElementById('bef'+i).value).getTime()});if(v.some(isNaN))return;if(onsave(v)!==false)cl()}}
