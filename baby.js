@@ -6,7 +6,8 @@ if(!D||!D.babies||!D.babies.length)D={babies:[{id:'b1',name:'아기'}],logs:[],g
 D.logs=D.logs||[];D.sleep=D.sleep||{};D.gap=D.gap||180;
 function save(){S.set(KEY,D);if(window.LCSync)LCSync.kick('baby')}
 var cur=D.babies[0].id,type='formula',day=new Date();
-var TY={formula:['🍼','분유','ml'],breast:['🤱','모유','분'],food:['🥣','이유식','g'],diaper:['🧷','기저귀',''],sleep:['😴','수면',''],temp:['🌡️','체온','℃'],med:['💊','투약',''],note:['📝','메모','']};
+var TY={formula:['🍼','분유','ml'],breast:['🤱','모유','분'],food:['🥣','이유식','g'],diaper:['<svg class="dia" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4.5h19v5.5c0 5.2-4.2 9-9.5 10C6.700 19 2.500 15.200 2.500 10z" fill="#fff" stroke="#4A90E2" stroke-width="1.6" stroke-linejoin="round"/><path d="M2.500 8.500h19" stroke="#4A90E2" stroke-width="1.4"/><circle cx="6" cy="6.500" r="1" fill="#F59E0B"/><circle cx="18" cy="6.500" r="1" fill="#F59E0B"/></svg>','기저귀',''],sleep:['😴','수면',''],temp:['🌡️','체온','℃'],med:['💊','투약',''],note:['📝','메모','']};
+var WH={formula:[10,400,10,120],breast:[1,60,1,10],food:[5,300,5,50]};
 var CHIPS={formula:[60,80,100,120,140,160,180],breast:[5,10,15,20],food:[30,50,80,100]};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function hm(t){var d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())}
@@ -42,12 +43,16 @@ function drawForm(){
  else if(type==='med'||type==='note'){h+='<label for="bnote">'+(type==='med'?'약 이름·용량':'내용')+'</label><input id="bnote" maxlength="80" autocomplete="off">'+tm+'<button type="button" id="brec">'+TY[type][0]+' 기록하기</button>'}
  else{
   var last=mine(cur).filter(function(l){return l.k===type})[0],dv=type==='temp'?'36.5':last?last.v:'';
-  if(CHIPS[type]){h+='<label>'+TY[type][1]+' 양 ('+u+') · 누르면 바로 기록</label><div class="big">'+CHIPS[type].map(function(c){return '<button type="button" data-c="'+c+'"'+(last&&+last.v===c?' class="last"':'')+'>'+c+'</button>'}).join('')+'</div><label for="bv">직접 입력</label>'}
+  if(CHIPS[type]){var W=WH[type],dd=last&&last.v>0?+last.v:W[3];dd=Math.min(W[1],Math.max(W[0],Math.round((dd-W[0])/W[2])*W[2]+W[0]));var it='';for(var q=W[0];q<=W[1];q+=W[2])it+='<div data-v="'+q+'">'+q+'<small>'+u+'</small></div>';
+   h+='<label>'+TY[type][1]+' 양 ('+u+') · 위아래로 밀어서 정하세요</label><div class="whw"><div class="wh" id="bwh" data-d="'+dd+'">'+it+'</div><i></i></div><input id="bv" type="hidden" value="'+dd+'">'}
   else h+='<label for="bv">'+TY[type][1]+' ('+u+')</label>';
-  h+='<input id="bv" inputmode="decimal" value="'+dv+'" autocomplete="off">';
+  if(!CHIPS[type])h+='<input id="bv" inputmode="decimal" value="'+dv+'" autocomplete="off">';
   if(type==='formula')h+='<details><summary>📝 메모 남기기</summary><input id="bnote" maxlength="40" placeholder="예: 다 먹음, 반 남김" autocomplete="off"></details>';
   h+=tm+'<button type="button" id="brec">'+TY[type][0]+' 기록하기</button>'}
- $('bfields').innerHTML=h;drawStatus()}
+ $('bfields').innerHTML=h;wheel();drawStatus()}
+function wheel(){var w=$('bwh');if(!w)return;var H=44,dd=+w.getAttribute('data-d'),its=w.children,ix=0;for(var q=0;q<its.length;q++)if(+its[q].getAttribute('data-v')===dd)ix=q;
+ w.scrollTop=ix*H;var t;function sync(){var k=Math.max(0,Math.min(its.length-1,Math.round(w.scrollTop/H)));$('bv').value=its[k].getAttribute('data-v');for(var q=0;q<its.length;q++)its[q].className=q===k?'on':''}
+ sync();w.addEventListener('scroll',function(){clearTimeout(t);sync()});w.addEventListener('click',function(e){var d=e.target.closest('[data-v]');if(d)w.scrollTo({top:Array.prototype.indexOf.call(its,d)*H,behavior:'smooth'})})}
 // 오늘 기록
 function drawLog(){
  var s0=dayStart(day),s1=s0+864e5,L=mine(cur).filter(function(l){return l.t>=s0&&l.t<s1}).sort(function(a,b){return a.t-b.t});
@@ -56,7 +61,7 @@ function drawLog(){
  var f=0,fc=0,bm=0,fd=0,pe=0,po=0,sl=0,mx=0;
  L.forEach(function(l){if(l.k==='formula'){f+=+l.v||0;fc++}if(l.k==='breast')bm+=+l.v||0;if(l.k==='food')fd+=+l.v||0;
   if(l.k==='diaper'){if(/소변/.test(l.v))pe++;if(/대변/.test(l.v))po++}if(l.k==='sleep')sl+=(+l.e||0)-l.t;if(l.k==='temp')mx=Math.max(mx,+l.v||0)});
- var sum=[['🍼 분유',f+'ml · '+fc+'회'],['🧷 소변/대변',pe+' / '+po],['😴 수면',sl?dur(sl):'-']];
+ var sum=[['🍼 분유',f+'ml · '+fc+'회'],['<svg class="dia" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4.5h19v5.5c0 5.2-4.2 9-9.5 10C6.700 19 2.500 15.200 2.500 10z" fill="#fff" stroke="#4A90E2" stroke-width="1.6" stroke-linejoin="round"/><path d="M2.500 8.500h19" stroke="#4A90E2" stroke-width="1.4"/><circle cx="6" cy="6.500" r="1" fill="#F59E0B"/><circle cx="18" cy="6.500" r="1" fill="#F59E0B"/></svg> 소변/대변',pe+' / '+po],['😴 수면',sl?dur(sl):'-']];
  if(bm)sum.push(['🤱 모유',bm+'분']);if(fd)sum.push(['🥣 이유식',fd+'g']);if(mx)sum.push(['🌡️ 체온',mx+'℃']);
  $('bsum').innerHTML=sum.map(function(x){return '<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join('');
  $('blog').innerHTML=L.length?L.map(function(l){var t=TY[l.k];
@@ -76,8 +81,7 @@ $('btabs').addEventListener('click',function(e){var b=e.target.closest('[data-b]
  if(e.target.id==='badd'){var n=prompt('아기 이름(애칭)을 입력하세요');if(n&&n.trim()){var id='b'+Date.now().toString(36);D.babies.push({id:id,name:n.trim().slice(0,12),_u:Date.now()});cur=id;save();all()}}});
 function pick(e){var b=e.target.closest('[data-t]');if(!b)return;var t=b.getAttribute('data-t');if(t==='sleep'){toggleSleep();return}type=t;flash='';drawForm()}
 $('btypes').addEventListener('click',pick);$('bmore').addEventListener('click',pick);
-$('bfields').addEventListener('click',function(e){var c=e.target.closest('[data-c]');if(c){$('bv').value=c.getAttribute('data-c');rec();return}
- var d=e.target.closest('[data-d]');if(d){rec(d.getAttribute('data-d'));return}
+$('bfields').addEventListener('click',function(e){ var d=e.target.closest('[data-d]');if(d){rec(d.getAttribute('data-d'));return}
  if(e.target.id==='brec')rec()});
 function rec(dv){
  var det=$('bdet'),t=det&&det.open?new Date($('bt').value).getTime():Date.now();if(isNaN(t))t=Date.now();

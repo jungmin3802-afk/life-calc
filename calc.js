@@ -93,15 +93,15 @@ C.push(
  run:function(v){if(!v.p||!v.d)return null;var avg=v.p/v.d,lo=MIN*0.8*8,hi=68100,d=avg*0.6,ap=Math.min(Math.max(d,lo),hi);
   var T=[[120,120],[150,180],[180,210],[210,240],[240,270]],days=T[v.y][v.g];
   return[['1일 평균임금',won(avg)],['평균임금의 60%',won(d)],['적용 1일 구직급여',won(ap),1],['소정급여일수',days+'일'],['예상 총 수령액',won(ap*days)],['월 환산 (30일)',won(ap*30)]]}},
-{k:'leave',n:'연차',nt:'근로기준법 기준 간이 계산입니다. 1년 미만은 매월 개근, 1년 이상은 80% 이상 출근을 가정하고 5인 미만 사업장은 적용되지 않을 수 있습니다.',
- f:[['s','입사일','date'],['e','기준일 (비우면 오늘)','date'],['u','미사용 연차일수','num',0],['w','월 통상임금 (원, 선택)','num']],
+{k:'leave',n:'연차',nt:'입사일로 발생 연차를 계산하고, 내가 쓴 연차일수를 빼서 미사용 연차를 자동으로 보여줍니다. 근로기준법 기준 간이 계산입니다. 1년 미만은 매월 개근, 1년 이상은 80% 이상 출근을 가정하고 5인 미만 사업장은 적용되지 않을 수 있습니다.',
+ f:[['s','입사일','date'],['e','기준일 (비우면 오늘)','date'],['u','내가 쓴 연차일수','num',0],['w','월 통상임금 (원, 선택)','num']],
  run:function(v){if(!v.s)return null;var e=v.e||TD();if(e<v.s)return[['안내','기준일이 입사일보다 앞섭니다']];
   var y=e.getUTCFullYear()-v.s.getUTCFullYear(),mo=e.getUTCMonth()-v.s.getUTCMonth(),dd=e.getUTCDate()-v.s.getUTCDate();
   var months=y*12+mo-(dd<0?1:0),yrs=Math.floor(months/12),rm=months%12,r=[],n,lbl;
   r.push(['근속기간',yrs+'년 '+rm+'개월']);
   if(months<12){n=Math.min(11,Math.max(0,months));lbl='1년 미만 (매월 개근 시 1일씩)'}else{n=Math.min(25,15+Math.floor((yrs-1)/2));lbl='1년 이상 (80% 이상 출근 시)'}
-  r.push(['적용 기준',lbl]);r.push(['발생 연차',n+'일',1]);
-  if(v.u>0){r.push(['미사용 연차',pct(v.u,1)+'일']);if(v.w){var day=v.w/209*8;r.push(['1일 통상임금 (월 209시간 기준)',won(day)]);r.push(['연차수당',won(day*v.u),1])}}
+  r.push(['적용 기준',lbl]);r.push(['발생 연차',n+'일']);
+  var us=Math.max(0,v.u||0),left=Math.max(0,n-us);r.push(['사용한 연차',pct(us,1)+'일']);r.push(['미사용 연차',pct(left,1)+'일',1]);if(v.w){var day=v.w/209*8;r.push(['1일 통상임금 (월 209시간 기준)',won(day)]);r.push(['연차수당 (미사용분)',won(day*left),1])}
   return r}},
 {k:'inctax',n:'종합소득세',nt:'필요경비를 뺀 소득금액 기준의 간이 계산입니다. 기장세액공제, 자녀세액공제 등은 공제액 칸에 직접 넣어 주세요.',
  f:[['i','종합소득금액 (연, 원)','num'],['d','소득공제 합계 (원, 본인 기본공제 150만원 포함)','num',1500000],['c','세액공제·감면 합계 (원)','num',0]],
