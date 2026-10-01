@@ -99,7 +99,7 @@ function drawDay(){
 var eK='e',eC='s',draft={t:'',bd:'',leap:false,ny:false},addOpen=false;
 function addForm(){var B=eK==='b';
  var h='<details class="addev"'+(addOpen?' open':'')+'><summary>＋ 일정 · 생일 추가</summary><div class="seg" id="ekind"><button type="button" data-k="e"'+(B?'':' class="on"')+'>📅 일정</button><button type="button" data-k="b"'+(B?' class="on"':'')+'>🎂 생일</button></div>';
- var al='<label for="eal">알림</label><select id="eal"><option value="">없음</option><option value="0">당일 아침</option><option value="1440" selected>하루 전</option></select>';
+ var al='<label for="eal">알림</label><select id="eal" data-cols="3"><option value="">없음</option><option value="0">당일 아침</option><option value="1440" selected>하루 전</option></select>';
  if(B){h+='<label for="et">이름</label><input id="et" maxlength="30" placeholder="예: 엄마, 민수" autocomplete="off" value="'+esc(draft.t)+'">'
   +'<label for="ebd">생일 날짜 (음력이면 음력 날짜를 고르세요)</label><input id="ebd" type="date" value="'+draft.bd+'">'
   +'<label>양력 / 음력</label><div class="seg" id="ecal"><button type="button" data-c="s"'+(eC==='s'?' class="on"':'')+'>☀️ 양력</button><button type="button" data-c="l"'+(eC==='l'?' class="on"':'')+'>🌙 음력</button></div>'
@@ -107,8 +107,10 @@ function addForm(){var B=eK==='b';
   +'<label class="chk"><input type="checkbox" id="eny"'+(draft.ny?' checked':'')+'> 태어난 해는 표시하지 않기 (나이 안 보임)</label>'
   +al+'<p class="note">한 번만 등록하면 매년 자동으로 달력에 표시돼요. 음력은 해마다 양력 날짜를 계산해서 보여 줘요.</p>'}
  else h+='<label for="et">제목</label><input id="et" maxlength="60" placeholder="예: 예방접종, 병원 예약" autocomplete="off" value="'+esc(draft.t)+'">'
-  +'<div class="r2"><div><label for="etm">시간 (선택)</label><input id="etm" type="time"></div><div><label for="eal">알림</label><select id="eal"><option value="">없음</option><option value="0">정시</option><option value="10">10분 전</option><option value="30">30분 전</option><option value="60">1시간 전</option><option value="1440">하루 전</option></select></div></div>'
-  +'<div class="r2"><div><label for="ere">반복</label><select id="ere"><option value="">안 함</option><option value="w">매주</option><option value="m">매월</option><option value="y">매년</option></select></div><div><label for="eco">색</label><select id="eco">'+COLORS.map(function(c,i){return '<option value="'+c+'">'+['핑크','주황','초록','파랑','보라'][i]+'</option>'}).join('')+'</select></div></div>';
+  +'<label for="etm">시간 (선택)</label><input id="etm" type="time">'
+  +'<label for="ere">반복</label><select id="ere" data-cols="4"><option value="">안 함</option><option value="w">매주</option><option value="m">매월</option><option value="y">매년</option></select>'
+  +'<label for="eal">알림</label><select id="eal" data-cols="3"><option value="">없음</option><option value="0">정시</option><option value="10">10분 전</option><option value="30">30분 전</option><option value="60">1시간 전</option><option value="1440">하루 전</option></select>'
+  +'<label for="eco">색</label><select id="eco" data-cols="5">'+COLORS.map(function(c,i){return '<option value="'+c+'" data-c="'+c+'">'+['핑크','주황','초록','파랑','보라'][i]+'</option>'}).join('')+'</select>';
  return h+'<button type="button" id="eadd">'+(B?'생일 저장':'일정 저장')+'</button></details>'}
 function keep(){var t=$('et');if(t)draft.t=t.value;var b=$('ebd');if(b)draft.bd=b.value;var l=$('elp');draft.leap=!!(l&&l.checked);var n=$('eny');if(n)draft.ny=n.checked}
 function alLabel(m){return m===0?'정시':m===1440?'하루 전':m>=60?(m/60)+'시간 전':m+'분 전'}

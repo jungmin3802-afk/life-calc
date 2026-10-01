@@ -201,7 +201,7 @@ details.menu .in a{display:flex;align-items:center}
 .sg{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:8px;margin:2px 0 4px}
 .sg button{margin:0;width:auto;min-height:48px;padding:8px 6px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font-size:.95rem;font-weight:600;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .08s,background .15s;-webkit-tap-highlight-color:transparent}
 .sg button:active{transform:scale(.96)}
-.sg button small{font-size:.68rem;font-weight:400;color:var(--sub)}
+.cal .sg button[aria-checked="true"]{background:var(--pk);border-color:var(--pk);box-shadow:0 3px 10px color-mix(in srgb,var(--pk) 38%,transparent)}.sg button.sw{gap:4px;font-size:.8rem}.sg button.sw i{display:block;width:20px;height:20px;border-radius:50%;box-shadow:0 0 0 2px var(--card),0 0 0 3px var(--line)}.sg button.sw[aria-checked="true"] i{box-shadow:0 0 0 2px #fff}.sg button small{font-size:.68rem;font-weight:400;color:var(--sub)}
 .sg button[aria-checked="true"]{background:var(--acc);border-color:var(--acc);color:#fff;box-shadow:0 3px 10px color-mix(in srgb,var(--acc) 38%,transparent)}
 .sg button[aria-checked="true"] small{color:rgba(255,255,255,.88)}
 .fld[hidden]{display:none!important}

@@ -14,11 +14,11 @@ function up(sel){
  var lb=sel.id&&document.querySelector('label[for="'+sel.id+'"]');if(lb&&lb.textContent)g.setAttribute('aria-label',lb.textContent);
  sel.parentNode.insertBefore(g,sel.nextSibling);sel.hidden=true;
  function draw(){
-  var o=[].map.call(sel.options,function(x){var m=x.textContent.match(/^([A-Z]{3}) - (.+)$/);return m?{v:x.value,t:m[1],s:m[2]}:{v:x.value,t:x.textContent}});
-  g.style.setProperty('--n',cols(o));g.innerHTML='';
+  var o=[].map.call(sel.options,function(x){var m=x.textContent.match(/^([A-Z]{3}) - (.+)$/);return m?{v:x.value,t:m[1],s:m[2]}:{v:x.value,t:x.textContent,c:x.getAttribute('data-c')}});
+  g.style.setProperty('--n',sel.getAttribute('data-cols')||cols(o));g.innerHTML='';
   o.forEach(function(x){var b=document.createElement('button');b.type='button';b.setAttribute('role','radio');b.setAttribute('data-v',x.v);
    b.innerHTML=(x.s?'<b></b><small></small>':'<span></span>');
-   if(x.s){b.children[0].textContent=x.t;b.children[1].textContent=x.s}else b.children[0].textContent=x.t;
+   if(x.s){b.children[0].textContent=x.t;b.children[1].textContent=x.s}else{b.children[0].textContent=x.t;if(x.c){b.className='sw';var d=document.createElement('i');d.style.background=x.c;b.insertBefore(d,b.firstChild)}}
    g.appendChild(b)});
   mark();fit(g)}
  function mark(){var v=desc.get.call(sel);[].forEach.call(g.children,function(b){b.setAttribute('aria-checked',b.getAttribute('data-v')===v?'true':'false')})}
