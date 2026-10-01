@@ -223,7 +223,6 @@ C[ci]={k:'compound',n:old.n,nt:old.nt,
   return[['필요한 월 저축액',won(need),1],['총 납입 원금',won(pr2)],['예상 수익 (세전)',won(gn)],['목표 금액 ('+tg+')',won(pr2+gn*k)]]}};
 })();
 
-(function(){var c=C.find(function(x){return x.k==='vat'});if(c)c.f[1][3]=['공급가액 (별도)','합계금액 (포함)']})();
 
 var cur=C.findIndex(function(c){return c.k===window.CALC_KEY});var c=C[cur];
 function build(){var h='';
