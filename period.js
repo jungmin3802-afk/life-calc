@@ -65,7 +65,7 @@ function drawDay(pr){var st=state(sel,pr),x=D.sym[sel]||{p:0,s:[]},past=sel<=T,a
   h+='<label>통증</label><div class="pp4">'+PL.map(function(p,i){return '<button type="button" data-p="'+i+'" class="'+(x.p===i&&(i>0||D.sym[sel])?'on':'')+'"><span>'+p[0]+'</span>'+p[1]+'</button>'}).join('')+'</div>';
   h+='<label>증상</label><div class="psy">'+SY.map(function(k){return '<button type="button" data-s="'+k+'" class="'+((x.s||[]).indexOf(k)>=0?'on':'')+'">'+k+'</button>'}).join('')+'</div>'}
  var t=tips(st,x);
- if(t.length)h+='<div class="ptip"><b>🍽️ 이럴 땐</b>'+t.map(function(z){return '<p>'+z+'</p>'}).join('')+'<small>참고용이에요. 통증이 심하거나 오래가면 병원에 가보세요.</small></div>';
+ if(t.length)h+='<div class="ptip"><b>🍽️ 이럴 땐</b>'+t.map(function(z){return '<p>'+z+'</p>'}).join('')+'<small>참고용이에요. 심하면 병원에 가세요.</small></div>';
  else if(!past)h+='<p class="note">아직 오지 않은 날이에요.</p>';
  $('pday').innerHTML=h}
 function setSym(fn){var x=D.sym[sel]||(D.sym[sel]={p:0,s:[]});fn(x);if(!x.p&&!(x.s||[]).length)delete D.sym[sel];save();draw()}
