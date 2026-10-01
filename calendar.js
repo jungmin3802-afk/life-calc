@@ -83,21 +83,19 @@ function drawGrid(){
   var s=y+'-'+pad(m+1)+'-'+pad(d),dt=new Date(y,m,d),w=dt.getDay(),hn=holName(s),ev=evOn(s),di=D.diary[s];
   var cls='cc'+(s===ymd(today)?' td':'')+(s===sel?' sl':'')+(w===0||hn?' su':w===6?' sa':'');
   var dots='';ev.slice(0,3).forEach(function(e){dots+='<i style="background:'+e.color+'"></i>'});
-  h+='<button type="button" class="'+cls+'" data-d="'+s+'" aria-label="'+(m+1)+'월 '+d+'일'+(hn?' '+hn:'')+(ev.length?' 일정 '+ev.length+'개':'')+'"><b>'+d+'</b><em>'+(hn?hn.replace(' 연휴',''):'')+'</em><span class="dt">'+dots+(di&&(di.text||di.mood)?'<u>'+(di.mood||'✎')+'</u>':'')+'</span></button>'}
+  h+='<button type="button" class="'+cls+'" data-d="'+s+'" aria-label="'+(m+1)+'월 '+d+'일'+(hn?' '+hn:'')+(ev.length?' 일정 '+ev.length+'개':'')+'"><b>'+d+'</b><em>'+(hn?hn.replace(' 연휴',''):'')+'</em><span class="dt">'+dots+'</span></button>'}
  $('cg').innerHTML=h}
 function drawDay(){
  var p=sel.split('-'),dt=new Date(+p[0],+p[1]-1,+p[2]),hn=holName(sel),ev=evOn(sel),di=D.diary[sel]||{};
  var diff=Math.round((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-new Date(today.getFullYear(),today.getMonth(),today.getDate()))/864e5);
  var dd=diff===0?'오늘':diff>0?'D-'+diff:'D+'+(-diff);
  var h='<div class="dh"><div><strong>'+(+p[1])+'월 '+(+p[2])+'일 ('+WD[dt.getDay()]+')</strong>'+(hn?' <span class="hn">'+hn+'</span>':'')+'</div><span class="dd">'+dd+'</span></div>';
- h+='<div class="moods" role="group" aria-label="오늘의 기분">'+MOODS.map(function(x){return '<button type="button" class="mo'+(di.mood===x?' on':'')+'" data-m="'+x+'">'+x+'</button>'}).join('')+'</div>';
- h+='<textarea id="dtx" rows="3" placeholder="오늘의 다이어리를 적어보세요" aria-label="다이어리"></textarea>';
  h+='<h3 class="hh">일정</h3>';
  if(!ev.length)h+='<p class="note">등록된 일정이 없습니다.</p>';
  ev.forEach(function(e){
   h+='<div class="ev" style="border-left-color:'+e.color+'"><div class="et"><b>'+(e.type==='bday'?'🎂 ':'')+esc(e.title)+'</b><small>'+evSub(e,sel)+(e.al!==''&&e.al!=null?' · 🔔'+alLabel(+e.al):'')+'</small></div><div class="ea"><button type="button" class="sec" data-ics="'+e.id+'">📲 폰에 추가</button><button type="button" class="sec" data-del="'+e.id+'" aria-label="삭제">삭제</button></div></div>'});
  h+=addForm();
- $('cday').innerHTML=h;$('dtx').value=di.text||''}
+ $('cday').innerHTML=h}
 var eK='e',eC='s',draft={t:'',bd:'',leap:false,ny:false},addOpen=false;
 function addForm(){var B=eK==='b';
  var h='<details class="addev"'+(addOpen?' open':'')+'><summary>＋ 일정 · 생일 추가</summary><div class="seg" id="ekind"><button type="button" data-k="e"'+(B?'':' class="on"')+'>📅 일정</button><button type="button" data-k="b"'+(B?' class="on"':'')+'>🎂 생일</button></div>';
