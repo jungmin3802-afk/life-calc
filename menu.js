@@ -1,26 +1,79 @@
 (function(){
 var $=function(i){return document.getElementById(i)};
+var PT=[[80,82],[120,86],[100,114],[72,114],[128,118],[100,74],[88,98],[114,100]];
+var PP=[[100,66],[134,86],[132,122],[100,138],[68,122],[66,86],[100,102],[82,104]];
+function c(x,y,r,f,o){return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+f+'"'+(o?' opacity="'+o+'"':'')+'/>'}
+function sh(){return c(104,108,84,'#000',.16)}
+function bowl(col){return sh()+c(100,100,84,col)+c(100,100,76,'#fff',.14)}
+function tops(a,R){var s='';(a||[]).forEach(function(t,i){var p=PT[i];s+=c(p[0],p[1],R||12,t)+c(p[0]-3,p[1]-4,R?R/3:4,'#fff',.35)});return s}
+function wav(col,n){var s='';for(var i=0;i<n;i++){var y=62+i*13;s+='<path d="M54 '+y+' q14 -14 28 0 t28 0 t28 0 t28 0" fill="none" stroke="'+col+'" stroke-width="6" stroke-linecap="round"/>'}return s}
+var G={
+soup:function(b,br,t){return bowl(b)+c(100,100,66,br)+c(70,126,5,'#fff',.18)+c(128,74,4,'#fff',.18)+c(120,130,3,'#fff',.15)+tops(t)},
+noodle:function(b,br,nd,t,sc){return bowl(b)+c(100,100,66,br)+wav(nd,6)+(sc?c(100,100,36,sc)+c(90,92,8,'#fff',.15):'')+tops(t,12)},
+rice:function(b,w,ct){var s=bowl(b)+c(100,100,68,'#FBF8F0'),n=w.length,i;
+ for(i=0;i<n;i++){var a0=i/n*6.2832-1.57,a1=(i+1)/n*6.2832-1.57,x0=100+60*Math.cos(a0),y0=100+60*Math.sin(a0),x1=100+60*Math.cos(a1),y1=100+60*Math.sin(a1);
+  s+='<path d="M100 100 L'+x0.toFixed(1)+' '+y0.toFixed(1)+' A60 60 0 0 1 '+x1.toFixed(1)+' '+y1.toFixed(1)+' Z" fill="'+w[i]+'" stroke="#FBF8F0" stroke-width="4" stroke-linejoin="round"/>'}
+ if(ct==='egg')s+=c(100,100,22,'#fff')+c(100,100,12,'#F4B400')+c(96,96,4,'#fff',.5);else if(ct)s+=c(100,100,17,ct)+c(95,95,5,'#fff',.3);return s},
+fried:function(base,sp,egg){var s=sh()+c(100,100,84,'#F6F4EE')+c(100,100,72,'#fff',.7)+'<ellipse cx="100" cy="102" rx="60" ry="52" fill="'+base+'"/>',i;
+ for(i=0;i<22;i++){var a=i*2.4,r=8+(i*7)%44;s+=c(100+r*Math.cos(a),102+r*0.85*Math.sin(a),3+(i%3),sp[i%sp.length])}
+ if(egg)s+=c(100,92,20,'#fff')+c(100,92,10,'#F4B400');return s},
+plate:function(sauce,col,n,shape){var s=sh()+c(100,100,84,'#F4F3EF')+c(100,100,70,'#fff')+c(100,100,70,'none')+'<circle cx="100" cy="100" r="70" fill="none" stroke="#E4E1D8" stroke-width="2"/>';
+ if(sauce)s+=c(100,102,48,sauce,.9)+c(88,90,10,'#fff',.15);
+ var P=n===1?[[100,100]]:n===2?[[80,100],[122,100]]:n===3?[[100,74],[76,116],[126,116]]:PP.slice(0,n),i;
+ P.forEach(function(p,i){var x=p[0],y=p[1],r=i*37%90;
+  if(shape==='r')s+=c(x+2,y+3,17,'#000',.18)+c(x,y,17,col)+c(x-5,y-6,6,'#fff',.28);
+  else if(shape==='s')s+='<g transform="rotate('+r+' '+x+' '+y+')"><rect x="'+(x-18)+'" y="'+(y-6)+'" width="36" height="13" rx="6.500" fill="'+col+'"/><rect x="'+(x-14)+'" y="'+(y-4)+'" width="26" height="3" rx="1.500" fill="#fff" opacity=".3"/></g>';
+  else{var w=n===1?72:n<=2?44:34,h=n===1?50:n<=2?32:22;s+='<g transform="rotate('+(i*25-10)+' '+x+' '+y+')"><rect x="'+(x-w/2)+'" y="'+(y-h/2+2)+'" width="'+w+'" height="'+h+'" rx="8" fill="#000" opacity=".16"/><rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'" rx="8" fill="'+col+'"/><rect x="'+(x-w/2+5)+'" y="'+(y-h/2+4)+'" width="'+(w-14)+'" height="4" rx="2" fill="#fff" opacity=".28"/></g>'}});
+ return s},
+sushi:function(t){var s=sh()+'<rect x="14" y="40" width="172" height="120" rx="18" fill="#A9784B"/><rect x="20" y="46" width="160" height="108" rx="14" fill="#C08E5E"/>';
+ [[56,78],[116,78],[56,124],[116,124]].forEach(function(p,i){var x=p[0],y=p[1];s+='<ellipse cx="'+(x+16)+'" cy="'+(y+14)+'" rx="30" ry="15" fill="#000" opacity=".15"/><ellipse cx="'+(x+14)+'" cy="'+(y+10)+'" rx="28" ry="14" fill="#FBF8F0"/><ellipse cx="'+(x+14)+'" cy="'+(y+4)+'" rx="30" ry="13" fill="'+t[i%t.length]+'"/><path d="M'+(x-8)+' '+(y+2)+' q22 -8 44 0" stroke="#fff" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round"/>'});
+ return s+c(166,60,6,'#7BB661')},
+burger:function(){return sh()+c(100,100,84,'#F4F3EF')+'<ellipse cx="100" cy="150" rx="62" ry="14" fill="#D9A04B"/><rect x="38" y="128" width="124" height="18" rx="9" fill="#E8B05C"/><rect x="34" y="116" width="132" height="16" rx="8" fill="#6B3A22"/><path d="M30 108 q16 -12 32 0 t32 0 t32 0 t32 0 v8 h-128z" fill="#4C9F4C"/><rect x="38" y="98" width="124" height="10" fill="#F4C542"/><rect x="42" y="90" width="116" height="10" rx="5" fill="#D8442A"/><path d="M36 90 q0 -50 64 -50 q64 0 64 50z" fill="#E8A24F"/><path d="M52 78 q10 -24 48 -26" stroke="#fff" stroke-width="5" fill="none" opacity=".3" stroke-linecap="round"/>'+[[78,62],[100,54],[122,62],[90,76],[112,76]].map(function(p){return '<ellipse cx="'+p[0]+'" cy="'+p[1]+'" rx="4" ry="2.500" fill="#FFF3D6"/>'}).join('')},
+pizza:function(tp){var s=sh()+c(100,100,84,'#E4A84F')+c(100,100,74,'#D8482B')+c(100,100,70,'#F7D567'),i;
+ for(i=0;i<7;i++){var a=i*0.9,r=i%2?44:24;s+=c(100+r*Math.cos(a),100+r*Math.sin(a),10,tp)+c(100+r*Math.cos(a)-3,100+r*Math.sin(a)-3,3,'#fff',.25)}
+ s+=c(70,70,4,'#4C9F4C')+c(128,122,4,'#4C9F4C')+c(96,128,4,'#4C9F4C');
+ return s+'<path d="M100 100 L100 26 M100 100 L164 137 M100 100 L36 137" stroke="#D8A53F" stroke-width="2.500" opacity=".7"/>'},
+pasta:function(sc,nd,gn){var s=sh()+c(100,100,84,'#F4F3EF')+c(100,100,70,'#fff')+'<circle cx="100" cy="100" r="70" fill="none" stroke="#E4E1D8" stroke-width="2"/>',i;
+ s+=c(100,102,52,nd);for(i=0;i<5;i++)s+='<circle cx="100" cy="102" r="'+(48-i*9)+'" fill="none" stroke="'+(i%2?'#fff':sc)+'" stroke-width="5" opacity="'+(i%2?.25:.9)+'"/>';
+ s+=c(100,102,18,sc);for(i=0;i<6;i++)s+=c(78+i*9%46+8,84+i*17%40,3.500,gn);return s+c(100,100,5,gn)},
+salad:function(l){var s=bowl('#F2F0E8')+c(100,100,66,l[0],.35),i;
+ for(i=0;i<16;i++){var a=i*2.1,r=10+(i*9)%44;s+='<ellipse cx="'+(100+r*Math.cos(a)).toFixed(1)+'" cy="'+(100+r*Math.sin(a)).toFixed(1)+'" rx="'+(14+i%3*3)+'" ry="'+(8+i%2*3)+'" fill="'+l[i%l.length]+'" transform="rotate('+(i*47)+' '+(100+r*Math.cos(a)).toFixed(1)+' '+(100+r*Math.sin(a)).toFixed(1)+')" opacity=".95"/>'}return s},
+rolls:function(f){var s=sh()+'<rect x="12" y="34" width="176" height="132" rx="16" fill="#C9A06A"/><rect x="18" y="40" width="164" height="120" rx="12" fill="#DDB982"/>';
+ [[58,76],[100,76],[142,76],[78,124],[122,124]].forEach(function(p){var x=p[0],y=p[1];s+=c(x+2,y+3,20,'#000',.16)+c(x,y,20,'#23302A')+c(x,y,16,'#FBF8F0');
+  for(var k=0;k<4;k++)s+=c(x-6+(k%2)*12,y-6+(k>>1)*12,3.600,f[k%f.length])});return s},
+dump:function(col){var s=sh()+c(100,100,84,'#F4F3EF')+c(100,100,70,'#fff'),i;
+ [[100,66],[134,98],[116,138],[78,136],[64,96]].forEach(function(p,i){var x=p[0],y=p[1],r=i*70;s+='<g transform="rotate('+r+' '+x+' '+y+')"><path d="M'+(x-22)+' '+(y+8)+' q22 -40 44 0 q-22 10 -44 0z" fill="#000" opacity=".15" transform="translate(2 3)"/><path d="M'+(x-22)+' '+(y+8)+' q22 -40 44 0 q-22 10 -44 0z" fill="'+col+'"/><path d="M'+(x-14)+' '+(y-6)+' l4 6 M'+(x-6)+' '+(y-10)+' l3 8 M'+x+' '+(y-12)+' l3 8 M'+(x+8)+' '+(y-10)+' l2 8" stroke="#fff" stroke-width="2.200" opacity=".6" stroke-linecap="round"/></g>'});return s},
+sand:function(f){var s=sh()+c(100,100,84,'#F4F3EF')+c(100,100,70,'#fff'),i;
+ [[0,-18],[0,22]].forEach(function(o,k){var y=100+o[1];s+='<g transform="rotate('+(k?8:-8)+' 100 '+y+')"><path d="M52 '+(y+20)+' L148 '+(y+20)+' L100 '+(y-30)+'z" fill="#000" opacity=".14" transform="translate(2 3)"/><path d="M52 '+(y+20)+' L148 '+(y+20)+' L100 '+(y-30)+'z" fill="#E8C788"/><path d="M60 '+(y+14)+' L140 '+(y+14)+' L100 '+(y-22)+'z" fill="#F7E3B5"/>'+f.map(function(cl,j){return '<rect x="'+(62+j*2)+'" y="'+(y+5-j*6)+'" width="'+(76-j*4)+'" height="5" rx="2.500" fill="'+cl+'"/>'}).join('')+'</g>'});return s},
+omu:function(){return sh()+c(100,100,84,'#F4F3EF')+c(100,100,70,'#fff')+'<ellipse cx="100" cy="102" rx="62" ry="44" fill="#F4C542"/><ellipse cx="86" cy="90" rx="30" ry="10" fill="#fff" opacity=".28"/><path d="M52 96 q12 -14 24 0 t24 0 t24 0 t24 0" fill="none" stroke="#C8321E" stroke-width="6" stroke-linecap="round"/>'},
+curry:function(){return sh()+c(100,100,84,'#F4F3EF')+c(100,100,70,'#fff')+'<path d="M100 36 a64 64 0 0 0 0 128z" fill="#FBF8F0" stroke="#E4E1D8"/><path d="M100 36 a64 64 0 0 1 0 128z" fill="#9A5B22"/>'+c(124,76,9,'#E8892B')+c(132,110,9,'#E8B05C')+c(116,138,8,'#E8892B')+c(112,98,6,'#E8D49A')+c(70,92,4,'#E4E1D8')+c(78,120,4,'#E4E1D8')},
+tri:function(){var s=sh()+'<rect x="12" y="40" width="176" height="120" rx="16" fill="#C9A06A"/>';[[56,100],[104,92],[148,108]].forEach(function(p,i){var x=p[0],y=p[1];s+='<g transform="rotate('+(i*14-14)+' '+x+' '+y+')"><path d="M'+x+' '+(y-30)+' L'+(x+30)+' '+(y+22)+' L'+(x-30)+' '+(y+22)+'z" fill="#000" opacity=".15" transform="translate(2 3)"/><path d="M'+x+' '+(y-30)+' L'+(x+30)+' '+(y+22)+' L'+(x-30)+' '+(y+22)+'z" fill="#FBF8F0" stroke="#EDE7D8" stroke-width="2"/><path d="M'+(x-20)+' '+(y+4)+' L'+(x+20)+' '+(y+4)+' L'+(x+30)+' '+(y+22)+' L'+(x-30)+' '+(y+22)+'z" fill="#23302A"/></g>'});return s}
+};
+var R='#C8321E',Y='#F4C542',Gr='#4C9F4C',Or='#E8892B',Br='#8B4A2B',Cr='#F7F1E1',DK='#3a3a3a',WH='#f4f0e6';
 var M={
-'한식':[['🍲','김치찌개'],['🥘','된장찌개'],['🍲','순두부찌개'],['🍲','부대찌개'],['🍖','제육볶음'],['🥩','불고기'],['🍚','비빔밥'],['🍜','칼국수'],['🍲','삼계탕'],['🥩','삼겹살'],['🍲','갈비탕'],['🍲','설렁탕'],['🍲','감자탕'],['🥘','닭볶음탕'],['🐟','생선구이 정식'],['🍚','김치볶음밥'],['🍲','육개장'],['🥬','쌈밥'],['🍜','냉면'],['🍲','곰탕']],
-'중식':[['🍜','짜장면'],['🍜','짬뽕'],['🍤','탕수육'],['🍚','볶음밥'],['🍗','깐풍기'],['🍜','우동(중식)'],['🥟','군만두'],['🍚','마파두부 덮밥'],['🍤','깐쇼새우'],['🍜','울면'],['🍖','양장피'],['🍚','잡채밥'],['🍜','마라탕'],['🍢','꿔바로우']],
-'일식':[['🍣','초밥'],['🍜','라멘'],['🍤','돈카츠'],['🍜','우동'],['🍚','규동'],['🍚','연어덮밥'],['🍤','텐동'],['🍜','소바'],['🍚','오므라이스'],['🍢','야키토리'],['🍣','회덮밥'],['🍲','샤브샤브'],['🍛','카레라이스'],['🍚','장어덮밥']],
-'양식':[['🍝','토마토 파스타'],['🍝','크림 파스타'],['🍕','피자'],['🍔','수제버거'],['🥩','스테이크'],['🥗','샐러드'],['🍝','까르보나라'],['🍛','리조또'],['🥪','샌드위치'],['🍗','치킨 스테이크'],['🌮','타코'],['🌯','부리토'],['🍳','브런치 플레이트'],['🥘','그라탕']],
-'분식':[['🌶️','떡볶이'],['🍙','김밥'],['🍢','어묵'],['🍜','라면'],['🍤','튀김'],['🌭','순대'],['🍚','참치마요 덮밥'],['🥟','만두'],['🍜','쫄면'],['🍞','토스트'],['🍙','주먹밥'],['🍲','치즈 라볶이']],
-'아시아':[['🍜','쌀국수'],['🍛','팟타이'],['🥙','반미'],['🍛','나시고렝'],['🍛','인도 커리와 난'],['🍢','사테'],['🍜','분짜'],['🍛','똠얌꿍'],['🥟','딤섬'],['🍛','카오팟']],
-'야식·안주':[['🍗','치킨'],['🍖','족발'],['🥩','보쌈'],['🍢','곱창'],['🍜','라면+계란'],['🍕','피자'],['🍤','감자튀김'],['🥘','닭발'],['🐟','회'],['🍲','어묵탕'],['🍗','양념치킨'],['🍖','막창']],
-'가볍게':[['🥗','샐러드'],['🥪','샌드위치'],['🥣','죽'],['🍌','과일과 요거트'],['🥑','아보카도 토스트'],['🍙','주먹밥'],['🥣','오트밀'],['🍲','두부 요리'],['🥚','달걀 샌드위치'],['🥤','샐러드 랩']]};
+'한식':[['김치찌개','soup',DK,'#C43B1E',[Cr,Br,Gr,'#E9C46A']],['된장찌개','soup','#6b4a32','#9A6B2F',[Cr,Gr,Br,'#E9C46A']],['순두부찌개','soup',DK,'#D8442A',['#FFF4D6','#F6D365',Gr]],['부대찌개','soup',DK,'#D9531E',['#F2A7A0',Y,'#E8E0C8',Gr,'#8A3b2b']],['제육볶음','plate','#C23B22','#A9402B',5,'sl'],['불고기','plate','#8B4A2B','#6B3A22',5,'sl'],['비빔밥','rice','#7a5a3a',['#6BAF4C',Or,'#8A5A3A','#F2E3A0','#B33A2A'],'egg'],['칼국수','noodle','#d9c9a8','#F1E2B8','#F7EDCF',[Gr,Or,'#fff']],['삼계탕','soup',DK,'#F2E6B8',['#E9B97A',R,Gr,Cr]],['삼겹살','plate','','#D98C6E',6,'sl'],['갈비탕','soup',DK,'#C98E57',[Br,Cr,Gr,Or]],['설렁탕','soup','#7a5a3a','#F4EEDC',[Gr,Br,Cr]],['감자탕','soup',DK,'#B8462A',[Br,'#E9C46A',Gr,Or]],['닭볶음탕','soup',DK,'#C8481F',['#E8A24F',Or,Y,Gr]],['생선구이 정식','plate','','#C9A06A',2,'s'],['김치볶음밥','fried','#D86A3B',['#8A3b2b',Gr,Y],1],['육개장','soup',DK,'#C42E1B',[Br,Gr,Or]],['쌈밥','salad',['#4C9F4C','#6BBF59','#3F8A3F','#9BD16B']],['냉면','noodle','#c9d6df','#EAF4F8','#C9A97A',['#E8C76B','#6BAF4C',Or]],['곰탕','soup','#7a5a3a','#EDE3CC',[Gr,Br,Cr]]],
+'중식':[['짜장면','noodle',WH,'#F7F0E0','#C9A06A',[],'#2b1a12'],['짬뽕','noodle',DK,'#C62E1B','#F1D79A',[Gr,'#F4A9A0',Or,Cr]],['탕수육','plate','#E8892B','#E3B05B',6,'r'],['볶음밥','fried','#E3C068',[Or,Gr,'#8A3b2b'],1],['깐풍기','plate','#B8321E','#D9A24F',6,'r'],['고추잡채','plate','#6B3E26','#4C9F4C',5,'sl'],['군만두','dump','#D9A24F'],['마파두부 덮밥','rice','#cfc9b8',['#C2321C','#D9482B'],'#4C9F4C'],['깐쇼새우','plate','#F08A5D','#F2A68A',5,'r'],['울면','noodle',WH,'#E8D9A0','#F7EDCF',[Or,Gr,Cr]],['양장피','salad',[Y,Or,Gr,'#E8A0A0',Cr]],['잡채밥','rice','#cfc9b8',[Br,Or,Gr,'#7a5a3a'],''],['마라탕','soup',DK,'#A8231A',[Gr,'#E8C76B',Cr,Br,Or]],['꿔바로우','plate','#E8892B','#F2C675',5,'sl']],
+'일식':[['초밥','sushi',['#F28B6E','#F0A9A0',Cr,Or]],['라멘','noodle','#5a3a2e','#D9A24F','#F1D79A',['#F3E9D2',Gr,Br,Or]],['돈카츠','plate','','#D9A24F',3,'sl'],['우동','noodle',WH,'#E8D9A0','#F7EDCF',['#F4A9A0',Gr,Or]],['규동','rice','#7a3b2a',[Br,'#C9A06A',Or],'egg'],['연어덮밥','rice','#cfc9b8',['#F28B6E','#F0A07A',Cr],Or],['텐동','rice','#7a3b2a',['#E3B05B','#D9A24F','#C98A3A'],Gr],['소바','noodle','#2b2b2b','#EDE6D6','#8B7A62',[Gr]],['오므라이스','omu'],['야키토리','plate','','#C9733B',4,'s'],['회덮밥','rice','#cfc9b8',['#F28B6E','#6BAF4C',Or,Cr,'#B33A2A'],Y],['샤브샤브','soup','#9a9a9a','#EFE6C8',['#E8A0A0',Gr,Cr,Or]],['카레라이스','curry'],['장어덮밥','rice','#7a3b2a',['#5a3220','#6B3E26',Br],Gr]],
+'양식':[['토마토 파스타','pasta','#D0402A','#F0D18A',Gr],['크림 파스타','pasta','#F5E7BE','#F1DFA0',Gr],['피자','pizza','#B3261E'],['수제버거','burger'],['스테이크','plate','','#7A3B22',1,'sl'],['샐러드','salad',['#6BBF59','#4C9F4C','#D8442A',Y,'#9A6BD1']],['까르보나라','pasta','#F3DFA0','#F0D18A','#7a4a2b'],['리조또','soup',WH,'#F4E6B8',[Or,Gr]],['샌드위치','sand',[Gr,Or,'#F28B6E']],['치킨 스테이크','plate','#8B5A2B','#D9A24F',3,'sl'],['타코','dump','#E8C76B'],['부리토','sand',[Gr,'#C2321C',Y]],['브런치 플레이트','plate','','#F4C542',4,'r'],['그라탕','soup','#8a8a8a','#F0C860',['#D9A24F',Gr]]],
+'분식':[['떡볶이','plate','#D8381F','#F8E2C8',7,'s'],['김밥','rolls',[Y,Or,Gr,'#F28B6E']],['어묵','plate','','#C9A06A',4,'s'],['라면','noodle','#9aa0a6','#E0562B','#F1D79A',[Y,Gr,Cr]],['튀김','plate','','#D9A24F',6,'r'],['순대','plate','#F2A0A0','#4a2a2a',5,'sl'],['참치마요 덮밥','rice','#cfc9b8',['#F7E4C0',WH],Y],['만두','dump','#F7EBD0'],['쫄면','noodle',WH,'#F7F0E0','#F3E1B0',[Gr],'#C2321C'],['토스트','sand',[Y,Or,Gr]],['주먹밥','tri'],['치즈 라볶이','plate','#F2B03A','#F8E2C8',7,'s']],
+'아시아':[['쌀국수','noodle',WH,'#E8D9A0','#F7F1E1',[Br,Gr,'#E8A0A0']],['팟타이','fried',Or,[Gr,Y,Br],0],['반미','sand',[Gr,Or,'#F28B6E']],['나시고렝','fried','#B8561F',[Y,Gr,'#3a2a1a'],1],['인도 커리와 난','curry'],['사테','plate','#E8A24F','#C9733B',4,'s'],['분짜','noodle',WH,'#C98E57','#F7F1E1',[Br,Gr]],['똠얌꿍','soup',WH,'#D8582A',['#F28B6E',Gr,Cr]],['딤섬','dump','#F7EBD0'],['카오팟','fried','#D9B45A',[Gr,Or,Y],1]],
+'야식·안주':[['치킨','plate','','#D9892B',6,'r'],['족발','plate','#6b3a22','#A8552E',5,'sl'],['보쌈','plate','','#E8B0A0',6,'sl'],['곱창','plate','#C2491E','#E8A24F',6,'r'],['라면+계란','noodle','#9aa0a6','#E0562B','#F1D79A',[Y,Gr,Cr]],['피자','pizza','#B3261E'],['감자튀김','plate','','#F4C542',8,'s'],['닭발','plate','#C2321C','#C2552E',5,'r'],['회','plate','','#F28B6E',6,'sl'],['어묵탕','soup','#9a9a9a','#E8D9A0',['#C9A06A',Cr,Gr]],['양념치킨','plate','#C2321C','#D9892B',6,'r'],['막창','plate','','#D9A55F',6,'sl']],
+'가볍게':[['샐러드','salad',['#6BBF59','#4C9F4C','#D8442A',Y,'#9A6BD1']],['샌드위치','sand',[Gr,Or,'#F28B6E']],['죽','soup','#d9c9a8','#F4EAD0',[Gr,Or]],['과일과 요거트','soup',WH,'#F9F3E6',['#E8506B',Y,Gr,'#9A6BD1','#F28B6E']],['아보카도 토스트','sand',['#6BAF4C',Y]],['주먹밥','tri'],['오트밀','soup','#cfc9b8','#E6D3B0',['#9A6BD1','#E8506B']],['두부 요리','plate','#C23B22','#F7EBC8',5,'r'],['달걀 샌드위치','sand',[Y,Cr]],['샐러드 랩','sand',[Gr,Or]]]};
+function img(m){var a=m.slice(2);return '<svg viewBox="0 0 200 200" role="img" aria-label="'+m[0]+'">'+G[m[1]].apply(null,a)+'</svg>'}
 var CATS=['전체'].concat(Object.keys(M)),cat='전체',last='';
 $('mcat').innerHTML=CATS.map(function(c,i){return '<button type="button" data-c="'+c+'"'+(i?'':' class="on"')+'>'+c+'</button>'}).join('');
 $('mcat').addEventListener('click',function(e){var b=e.target.closest('[data-c]');if(!b)return;cat=b.getAttribute('data-c');this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)})});
-function pool(){var a=[];Object.keys(M).forEach(function(k){if(cat==='전체'||cat===k)M[k].forEach(function(m){a.push([m[0],m[1],k])})});return a}
+function pool(){var a=[];Object.keys(M).forEach(function(k){if(cat==='전체'||cat===k)M[k].forEach(function(m){a.push([m,k])})});return a}
 var busy=false;
-$('mgo').onclick=function(){if(busy)return;busy=true;var a=pool(),n=0,tot=12,out=$('mout');
- var t=setInterval(function(){var r=a[Math.floor(Math.random()*a.length)];n++;
-  if(n>=tot){clearInterval(t);var f;do{f=a[Math.floor(Math.random()*a.length)]}while(a.length>1&&f[1]===last);last=f[1];show(f);busy=false}
-  else{out.className='mo2 spin';$('mem').textContent=r[0];$('mnm').textContent=r[1];$('mct').textContent=''}},70)};
-function show(f){$('mout').className='mo2 done';$('mem').textContent=f[0];$('mnm').textContent=f[1];$('mct').textContent=f[2];$('mgo').textContent='🎲 다시 뽑기';
- $('msch').href='https://search.naver.com/search.naver?query='+encodeURIComponent('내 주변 '+f[1]+' 맛집');$('msch').hidden=false;
- try{var h=JSON.parse(localStorage.getItem('lc_menu')||'[]');h.unshift(f[0]+' '+f[1]);h=h.slice(0,8);localStorage.setItem('lc_menu',JSON.stringify(h));hist(h)}catch(_){}}
+$('mgo').onclick=function(){if(busy)return;busy=true;var a=pool(),n=0,out=$('mout');
+ var t=setInterval(function(){n++;
+  if(n>=12){clearInterval(t);var f;do{f=a[Math.floor(Math.random()*a.length)]}while(a.length>1&&f[0][0]===last);last=f[0][0];show(f);busy=false}
+  else{var r=a[Math.floor(Math.random()*a.length)];out.className='mo2 spin';$('mem').innerHTML=img(r[0]);$('mnm').textContent=r[0][0];$('mct').textContent=''}},80)};
+function show(f){$('mout').className='mo2 done';$('mem').innerHTML=img(f[0]);$('mnm').textContent=f[0][0];$('mct').textContent=f[1];$('mgo').textContent='🎲 다시 뽑기';
+ $('msch').href='https://search.naver.com/search.naver?query='+encodeURIComponent('내 주변 '+f[0][0]+' 맛집');$('msch').hidden=false;
+ try{var h=JSON.parse(localStorage.getItem('lc_menu')||'[]');h.unshift(f[0][0]);h=h.slice(0,8);localStorage.setItem('lc_menu',JSON.stringify(h));hist(h)}catch(_){}}
 function hist(h){$('mh').innerHTML=h.length?h.map(function(x){return '<span>'+x+'</span>'}).join(''):'<p class="note">아직 뽑은 메뉴가 없어요.</p>'}
 try{hist(JSON.parse(localStorage.getItem('lc_menu')||'[]'))}catch(_){hist([])}
+$('mem').innerHTML=img(['',"burger"]).replace('role="img"','');
+window._menuAll=M;window._menuImg=img;
 })();
