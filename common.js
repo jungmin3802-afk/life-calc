@@ -60,6 +60,8 @@ window.shareText=function(text,btn){
 /* 홈 화면에 추가 */
 var dp=null,ib=$('instbtn'),it=$('insttip');
 window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e});
+var ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+if(ios&&it)it.innerHTML='아이폰은 <b>Safari</b>에서 아래 가운데 <b>공유 버튼(□↑)</b>을 누르고 <b>홈 화면에 추가</b>를 선택하세요. 카카오톡 등 앱 안에서 연 화면에서는 보이지 않으니 링크를 Safari로 열어 주세요.';
 if(ib)ib.onclick=function(){if(dp){dp.prompt();dp=null}else if(it){it.hidden=!it.hidden}};
 if(window.matchMedia&&matchMedia('(display-mode:standalone)').matches&&ib)ib.hidden=true;
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){try{navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}}
