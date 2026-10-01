@@ -26,6 +26,20 @@ function mini(id,title,list){var el=$(id);if(!el)return;var L=list.filter(functi
  el.innerHTML='<section class="cat folder"><h2>'+title+'</h2><div class="apps">'+L.map(function(s){return app(byS[s])}).join('')+'</div></section>'}
 mini('favs','즐겨찾기',fav);mini('recs','최근 본 계산기',rec);
 
+/* 꾹 눌러 즐겨찾기 */
+(function(){if(!$('catlist'))return;var menu=null,t=null,sx=0,sy=0,sup=false;
+function hide(){if(menu){menu.remove();menu=null}}
+function show(a){hide();var h=(a.getAttribute('href')||'').replace('.html',''),f=LS.get('fav',[]),on=f.indexOf(h)>=0,r=a.getBoundingClientRect();
+ menu=document.createElement('div');menu.id='favm';menu.innerHTML='<button type="button">'+(on?'★ 즐겨찾기 해제':'⭐ 즐겨찾기 맨 위에 추가')+'</button>';document.body.appendChild(menu);
+ var w=menu.offsetWidth,x=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2)),y=r.top-menu.offsetHeight-8;if(y<8)y=r.bottom+8;menu.style.left=x+'px';menu.style.top=y+'px';
+ menu.firstChild.onclick=function(e){e.stopPropagation();var g=LS.get('fav',[]),i=g.indexOf(h);if(i>=0)g.splice(i,1);else g.unshift(h);LS.set('fav',g);fav=g;hide();mini('favs','즐겨찾기',fav);if(navigator.vibrate)try{navigator.vibrate(15)}catch(_){}}}
+document.addEventListener('pointerdown',function(e){var a=e.target.closest&&e.target.closest('a.app');if(menu&&!e.target.closest('#favm'))hide();if(!a)return;sx=e.clientX;sy=e.clientY;sup=false;clearTimeout(t);t=setTimeout(function(){sup=true;show(a)},450)});
+document.addEventListener('pointermove',function(e){if(t&&(Math.abs(e.clientX-sx)>8||Math.abs(e.clientY-sy)>8)){clearTimeout(t);t=null}});
+['pointerup','pointercancel'].forEach(function(n){document.addEventListener(n,function(){clearTimeout(t);t=null})});
+document.addEventListener('click',function(e){if(sup&&e.target.closest('a.app')){e.preventDefault();e.stopPropagation();sup=false}},true);
+document.addEventListener('contextmenu',function(e){if(e.target.closest('a.app'))e.preventDefault()});
+window.addEventListener('scroll',hide,{passive:true})})();
+
 /* 검색 */
 function bindFilter(input,links,groups,extra){if(!input)return;input.addEventListener('input',function(){var q=input.value.trim().toLowerCase();
  links.forEach(function(a){var m=!q||((a.getAttribute('data-k')||'')+a.textContent).toLowerCase().indexOf(q)>=0;a.style.display=m?'':'none'});
