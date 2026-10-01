@@ -24,18 +24,19 @@
 <p class="note warn" id="pwarn" hidden>이 화면에서는 브라우저 저장이 막혀 있어 기록이 화면을 닫으면 사라집니다. 실제 주소에서는 저장됩니다.</p>
 <div class="lgh pkh"><div class="lgs" id="psub">-</div><div class="lgb"><span id="pbig">-</span></div><div class="lgs" id="pfx"></div>
 <div class="lgr"><div><span>평균 주기</span><b id="pcl">-</b></div><div><span>평균 생리 기간</span><b id="ppl">-</b></div></div></div>
-<div class="card lgc pcd"><label id="plab">생리 시작일</label><input type="date" id="pdate"><button type="button" id="pbtn" class="lgsv">생리 시작했어요</button></div>
+<button type="button" id="pnow" class="lgsv pnw">🩸 오늘 생리 시작했어요</button>
 <div class="card cal pcd"><div class="ch"><button type="button" class="ib" id="pprev" aria-label="이전 달">‹</button><strong id="pttl"></strong><button type="button" class="ib" id="pnext" aria-label="다음 달">›</button><button type="button" class="sec" id="ptoday">오늘</button></div>
 <div class="cw"><span class="su">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sa">토</span></div><div class="cg" id="pg"></div>
-<div class="plg"><span><i class="a"></i>생리</span><span><i class="b"></i>예정</span><span><i class="c"></i>가임기</span><span>🥚 배란 예정</span></div></div>
-<div class="card lgc pcd"><h3 class="hh" style="margin-top:0">기록</h3><div id="plist"></div></div>
-<div class="card lgc pcd"><h3 class="hh" style="margin-top:0">설정 (기록이 없을 때 쓰는 기본값)</h3><label for="pset1">평균 주기 (일)</label><input id="pset1" inputmode="numeric" autocomplete="off"><label for="pset2">생리 기간 (일)</label><input id="pset2" inputmode="numeric" autocomplete="off"><div class="btnrow" style="margin-top:12px"><button type="button" class="sec" id="pcalbtn">다음 예정일을 달력에 추가</button></div></div>
+<div class="plg"><span><i class="a"></i>생리</span><span><i class="b"></i>예정</span><span><i class="c"></i>가임기</span><span>🥚 배란</span></div></div>
+<div class="card lgc pcd" id="pday"></div>
+<div class="card lgc pcd"><h3 class="hh" style="margin-top:0">지난 생리</h3><div id="plist"></div></div>
+<div class="card lgc pcd"><h3 class="hh" style="margin-top:0">기본값 (기록이 적을 때 사용)</h3><label for="pset1">평균 주기 (일)</label><input id="pset1" inputmode="numeric" autocomplete="off"><label for="pset2">생리 기간 (일)</label><input id="pset2" inputmode="numeric" autocomplete="off"><div class="btnrow" style="margin-top:12px"><button type="button" class="sec" id="pcalbtn">다음 예정일을 달력에 추가</button></div></div>
 <div class="card lgc pcd"><h3 class="hh" style="margin-top:0">백업</h3><div class="btnrow"><button type="button" class="sec" id="pexp">백업 저장</button><label class="sec fl">백업 불러오기<input type="file" id="pimp" accept=".json,application/json" hidden></label></div></div>
 <p class="note">예정일·가임기는 과거 기록으로 계산한 참고용 추정이에요. 피임이나 임신 판단, 진단에는 사용하지 마세요. 기록은 이 기기에만 저장됩니다.</p>
 <div class="ad"><!-- 광고 영역 --></div>
 <section class="ios" aria-label="도움말">
 <details><summary>생리주기 기록·예정일란?</summary><div class="ib2"><p>생리 시작일과 종료일을 기록하면 최근 기록의 평균 주기와 생리 기간을 자동으로 계산해 다음 생리 예정일을 알려주는 기록장입니다. 배란 예정일은 다음 생리 예정일 14일 전, 가임기는 배란 예정일 5일 전부터 1일 후로 추정해 달력에 색으로 표시합니다. 달력 일정에 예정일을 추가해 알림을 받을 수 있고, 기록은 회원가입 없이 내 기기에만 저장됩니다. 계산은 참고용이며 피임이나 진단을 대신할 수 없습니다.</p></div></details>
-<details><summary>사용 방법</summary><div class="ib2"><ol><li>생리가 시작된 날 버튼을 눌러 시작일을 기록하고, 끝난 날 종료일을 기록합니다.</li><li>2~3회 이상 기록하면 평균 주기가 자동으로 계산됩니다.</li><li>달력에서 생리일, 예정일, 가임기를 색으로 확인합니다.</li><li>필요하면 다음 예정일을 달력 일정에 추가해 알림을 받습니다.</li></ol></div></details>
+<details><summary>사용 방법</summary><div class="ib2"><ol><li>달력에서 생리가 시작된 날을 누르고 &quot;이 날부터 5일간&quot;처럼 기간 버튼을 누르면 한 번에 기록됩니다.</li><li>날짜를 눌러 통증 정도와 증상을 남기면 아래에 도움이 되는 음식이 짧게 나옵니다.</li><li>2~3회 이상 기록하면 평균 주기가 자동으로 계산되어 예정일·가임기·배란일이 달력에 표시됩니다.</li><li>필요하면 다음 예정일을 달력 일정에 추가해 알림을 받습니다.</li></ol></div></details>
 <details><summary>알아두면 좋은 점</summary><div class="ib2"><ul><li>기록은 시작일과 종료일을 둘 다 남길수록 예측이 정확해집니다.</li><li>주기가 불규칙하면 예정일은 참고만 하세요.</li></ul></div></details>
 <details><summary>자주 묻는 질문</summary><div class="ib2"><details class='q'><summary>예정일은 얼마나 정확한가요?</summary><p>주기가 규칙적인 경우 평균값으로 추정한 참고용 날짜입니다. 스트레스, 질환, 약물 등으로 주기는 쉽게 바뀌므로 실제와 며칠 차이가 날 수 있습니다.</p></details><details class='q'><summary>피임이나 임신 계획에 써도 되나요?</summary><p>권하지 않습니다. 가임기 표시는 단순 추정이라 피임 수단이 될 수 없고, 임신 계획이나 증상이 있다면 의료진과 상담하세요.</p></details><details class='q'><summary>기록은 어디에 저장되나요?</summary><p>서버로 보내지 않고 사용 중인 기기의 브라우저에만 저장됩니다. 기기를 바꾸거나 브라우저 데이터를 지우면 사라지니 백업 파일을 내려받아 두세요.</p></details></div></details>
 </section>
