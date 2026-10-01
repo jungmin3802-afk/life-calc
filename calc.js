@@ -244,6 +244,6 @@ function go(){var v=vals();
  document.getElementById('tb').innerHTML=r.map(function(x){return'<tr'+(x[2]?' class="b"':'')+'><td>'+x[0]+'</td><td>'+x[1]+'</td></tr>'}).join('');
  var sb=document.getElementById('share');
  if(!sb){sb=document.createElement('button');sb.id='share';sb.type='button';sb.className='sh';sb.textContent='결과 공유·복사';document.getElementById('tb').insertAdjacentElement('afterend',sb);sb.onclick=function(){if(window.shareText)window.shareText(sb._t,sb)}}
- sb._t=c.n+' 계산 결과\n'+r.map(function(x){return x[0]+': '+x[1]}).join('\n')+'\n'+location.href}
+ sb._t=c.n+' 계산 결과\n'+r.map(function(x){return x[0]+': '+x[1]}).join('\n')+'\n'+location.href;if(window.LCLink)LCLink.attach(c.k,v,r)}
 build();vis();document.getElementById('form').addEventListener('input',vis);document.getElementById('form').addEventListener('change',vis);document.getElementById('go').onclick=go;
 document.getElementById('form').addEventListener('keydown',function(e){if(e.key==='Enter')go()});

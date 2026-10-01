@@ -67,6 +67,7 @@ function evSub(e,s){
 function occurs(ev,s){
  if(ev.type==='bday')return bdayOn(ev,s);
  if(s<ev.date)return false;
+ if(ev.until&&s>ev.until)return false;
  if(ev.rep==='w')return new Date(s+'T00:00').getDay()===new Date(ev.date+'T00:00').getDay();
  if(ev.rep==='m')return s.slice(8)===ev.date.slice(8);
  if(ev.rep==='y')return s.slice(5)===ev.date.slice(5);
