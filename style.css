@@ -173,6 +173,11 @@ details.menu .in a{display:flex;align-items:center}
 .qs .qt:active{transform:scale(.96)}
 .mr{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px}.mr .chip{flex-shrink:0}
 .bx label{font-size:1rem;font-weight:700;margin-top:16px}
+.ed{border:0;background:transparent;font-size:1rem;padding:6px;cursor:pointer;margin:0;width:auto}.hz .ed{color:#fff;font-size:.9rem}
+#beo{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:110;display:flex;align-items:flex-end;justify-content:center}
+#bes{background:var(--card);color:var(--ink);width:100%;max-width:560px;border-radius:18px 18px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom))}
+#bes h3{margin:0 0 6px;font-size:1.15rem}#bes label{display:block;font-size:.85rem;color:var(--sub);margin:12px 0 4px}
+.bea{display:flex;gap:8px;margin-top:18px}.bea button{flex:1;padding:13px;border-radius:12px;border:0;font-size:1rem;font-weight:700;cursor:pointer;margin:0}.bea .y{background:#D6336C;color:#fff}.bea .n{background:var(--bg);color:var(--ink)}
 .whw{position:relative;margin-top:8px}.wh{height:176px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;padding:66px 0;box-sizing:border-box;text-align:center;scrollbar-width:none;border-radius:16px;background:var(--bg)}.wh::-webkit-scrollbar{display:none}
 .wh div{height:44px;line-height:44px;scroll-snap-align:center;font-size:1.3rem;color:var(--sub);font-weight:600;cursor:pointer}.wh div.on{color:var(--pk);font-size:1.7rem;font-weight:800}.wh small{font-size:.8rem;margin-left:3px}
 .whw i{position:absolute;left:12px;right:12px;top:66px;height:44px;border-top:1.5px solid var(--pk);border-bottom:1.5px solid var(--pk);pointer-events:none;border-radius:8px}

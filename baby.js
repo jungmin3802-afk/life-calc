@@ -28,7 +28,7 @@ function drawStatus(){
   h+='<div class="hx">다음 수유 <b>'+hm(next)+'</b> · '+(left>0?dur(left)+' 남음':'<em>'+dur(-left)+' 지났어요</em>')+'</div>'}
  else h+='<div class="hl">🍼 수유</div><div class="hb">기록 없음</div><div class="hs">아래 분유 버튼을 눌러 첫 기록을 남겨보세요</div>';
  var sl=D.sleep[cur];
- if(sl)h+='<div class="hz">😴 자는 중 · <b>'+dur(now-sl)+'</b> ('+hm(sl)+' 시작)</div>';
+ if(sl)h+='<div class="hz">😴 자는 중 · <b>'+dur(now-sl)+'</b> ('+hm(sl)+' 시작) <button type="button" class="ed" data-es="1" aria-label="수정">✏️</button></div>';
  $('bstat').innerHTML=h;
  var st=$('bslt');if(st){st.className='qt'+(sl?' on':'');st.innerHTML='<span>'+(sl?'☀️':'😴')+'</span>'+(sl?'깼어요':'잠들었어요')+'<small>'+(sl?dur(now-sl)+' 째':'수면 시작')+'</small>'}}
 // 입력폼
@@ -67,7 +67,7 @@ function drawLog(){
  $('blog').innerHTML=L.length?L.map(function(l){var t=TY[l.k];
   var d=l.k==='sleep'?(l.e?dur(l.e-l.t)+' 잠':'자는 중'):l.k==='diaper'?l.v:l.k==='med'||l.k==='note'?esc(l.n||''):l.v+t[2];
   var sub=l.k==='sleep'&&l.e?hm(l.t)+' → '+hm(l.e):(l.n&&l.k!=='med'&&l.k!=='note'?esc(l.n):t[1]);
-  return '<div class="lg"><span class="lt">'+hm(l.t)+'</span><span class="li k-'+l.k+'">'+t[0]+'</span><span class="ld"><b>'+d+'</b><small>'+sub+'</small></span><button type="button" class="x" data-x="'+l.id+'" aria-label="삭제">×</button></div>'}).join(''):'<p class="note">이 날의 기록이 없습니다.</p>';
+  return '<div class="lg"><span class="lt">'+hm(l.t)+'</span><span class="li k-'+l.k+'">'+t[0]+'</span><span class="ld"><b>'+d+'</b><small>'+sub+'</small></span>'+(l.k==='sleep'?'<button type="button" class="ed" data-e="'+l.id+'" aria-label="수정">✏️</button>':'')+'<button type="button" class="x" data-x="'+l.id+'" aria-label="삭제">×</button></div>'}).join(''):'<p class="note">이 날의 기록이 없습니다.</p>';
  // 7일 분유 그래프
  var days=[],max=1;for(var i=6;i>=0;i--){var d0=dayStart(new Date(day.getFullYear(),day.getMonth(),day.getDate()-i)),v=0;
   mine(cur).forEach(function(l){if(l.k==='formula'&&l.t>=d0&&l.t<d0+864e5)v+=+l.v||0});days.push([new Date(d0),v]);max=Math.max(max,v)}
@@ -99,6 +99,17 @@ function toggleSleep(){
  if(s){D.logs.push({id:'l'+now.toString(36),b:cur,t:s,e:now,k:'sleep'});delete D.sleep[cur];day=new Date(s)}
  else D.sleep[cur]=now;
  save();all()}
+
+function esheet(title,fields,onsave){var o=document.createElement('div');o.id='beo';var s=document.createElement('div');s.id='bes';
+ s.innerHTML='<h3>'+title+'</h3>'+fields.map(function(f,i){return '<label>'+f[0]+'</label><input type="datetime-local" id="bef'+i+'" value="'+dtv(f[1])+'">'}).join('')+'<div class="bea"><button type="button" class="n" id="bec">취소</button><button type="button" class="y" id="bey">저장</button></div>';
+ o.appendChild(s);document.body.appendChild(o);function cl(){o.remove()}
+ o.addEventListener('click',function(e){if(e.target===o)cl()});s.querySelector('#bec').onclick=cl;
+ s.querySelector('#bey').onclick=function(){var v=fields.map(function(f,i){return new Date(document.getElementById('bef'+i).value).getTime()});if(v.some(isNaN))return;if(onsave(v)!==false)cl()}}
+$('blog').addEventListener('click',function(e){var b=e.target.closest('[data-e]');if(!b)return;var id=b.getAttribute('data-e'),l=D.logs.filter(function(x){return x.id===id})[0];if(!l)return;
+ esheet('😴 수면 시간 수정',[['잠든 시간',l.t],['깬 시간',l.e||Date.now()]],function(v){if(v[1]<=v[0]){S.notify('시간을 확인해 주세요','깬 시간이 잠든 시간보다 늦어야 해요.');return false}
+  l.t=v[0];l.e=v[1];save();day=new Date(l.t);all()})});
+$('bstat').addEventListener('click',function(e){if(!e.target.closest('[data-es]'))return;var s0=D.sleep[cur];if(!s0)return;
+ esheet('😴 잠든 시간 수정',[['잠든 시간',s0]],function(v){if(v[0]>Date.now()){S.notify('시간을 확인해 주세요','미래 시간은 고를 수 없어요.');return false}D.sleep[cur]=v[0];save();all()})});
 $('blog').addEventListener('click',function(e){var x=e.target.closest('[data-x]');if(x&&confirm('이 기록을 삭제할까요?')){D.logs=D.logs.filter(function(l){return l.id!==x.getAttribute('data-x')});save();all()}});
 $('bprev').onclick=function(){day=new Date(day.getFullYear(),day.getMonth(),day.getDate()-1);drawLog()};
 $('bnext').onclick=function(){day=new Date(day.getFullYear(),day.getMonth(),day.getDate()+1);drawLog()};
