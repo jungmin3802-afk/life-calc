@@ -21,11 +21,14 @@
 <main>
 <h1>환율 계산기</h1>
 <p class="lead">원화와 미국, 일본, 유럽, 중국, 홍콩, 영국, 호주, 캐나다, 뉴질랜드, 태국, 베트남, 대만, 필리핀 통화를 최신 환율로 바로 변환하세요.</p>
-<div class="card">
-<label for="amt">금액</label><input id="amt" inputmode="decimal" value="1,000">
-<div class="fxrow"><div><label for="from">바꿀 통화</label><select id="from"></select></div><button id="swap" type="button" aria-label="두 통화 서로 바꾸기">⇄</button><div><label for="to">받을 통화</label><select id="to"></select></div></div>
-<table id="tb"></table><p class="note" id="nt"></p></div>
-<h2>원화 대비 환율표</h2><div class="card"><table id="rt"><tr><td>환율을 불러오는 중입니다.</td><td></td></tr></table><p class="note" id="stamp"></p></div>
+<div class="fxh"><div class="fxl1"><span id="live" class="live">● 환율 확인 중</span><button id="refresh" type="button" aria-label="환율 새로고침">⟳ 새로고침</button></div><div class="fxbig" id="hero">—</div><div class="fxsub" id="stamp2"></div></div>
+<div class="card fxc">
+<div class="fxbox"><button type="button" class="curb" id="bfrom"></button><input id="amt" inputmode="decimal" value="1" aria-label="금액" autocomplete="off"></div>
+<div class="fxmid"><button id="swap" type="button" aria-label="두 통화 서로 바꾸기">⇅</button></div>
+<div class="fxbox out"><button type="button" class="curb" id="bto"></button><div id="res" class="resn" aria-live="polite">0</div></div>
+<div class="qk" id="qa"></div>
+<p class="note" id="nt"></p></div>
+<h2 class="fxt">한눈에 보는 환율</h2><div class="card fxlist"><div id="rt"><p class="note">환율을 불러오는 중입니다.</p></div><p class="note" id="stamp"></p></div>
 <div class="ad"><!-- 광고 영역 --></div>
 <section class="ios" aria-label="도움말">
 <details><summary>환율 계산기란?</summary><div class="ib2"><p>여행, 해외 직구, 송금 전에 얼마인지 미리 확인할 수 있는 환율 계산기입니다. 페이지를 열 때마다 최신 환율 데이터를 불러와 원화를 포함한 14개 통화를 서로 바꿔 계산합니다. 표시되는 환율은 국제 시장의 기준 환율이며, 은행이나 환전소에서 실제로 적용하는 매매기준율·환전 수수료와는 차이가 있습니다.</p></div></details>
