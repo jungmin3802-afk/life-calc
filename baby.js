@@ -44,7 +44,7 @@ function drawForm(){
  else{
   var last=mine(cur).filter(function(l){return l.k===type})[0],dv=type==='temp'?'36.5':last?last.v:'';
   if(CHIPS[type]){var W=WH[type],dd=last&&last.v>0?+last.v:W[3];dd=Math.min(W[1],Math.max(W[0],Math.round((dd-W[0])/W[2])*W[2]+W[0]));var it='';for(var q=W[0];q<=W[1];q+=W[2])it+='<div data-v="'+q+'">'+q+'<small>'+u+'</small></div>';
-   h+='<label>'+TY[type][1]+' 양 ('+u+') · 위아래로 밀어서 정하세요</label><div class="whw"><div class="wh" id="bwh" data-d="'+dd+'">'+it+'</div><i></i></div><input id="bv" type="hidden" value="'+dd+'">'}
+   h+='<label>'+TY[type][1]+' 양 ('+u+') · 위아래로 밀어서 정하세요</label><div class="bwhw"><div class="bwh" id="bwh" data-d="'+dd+'">'+it+'</div><i></i></div><input id="bv" type="hidden" value="'+dd+'">'}
   else h+='<label for="bv">'+TY[type][1]+' ('+u+')</label>';
   if(!CHIPS[type])h+='<input id="bv" inputmode="decimal" value="'+dv+'" autocomplete="off">';
   if(type==='formula')h+='<details><summary>📝 메모 남기기</summary><input id="bnote" maxlength="40" placeholder="예: 다 먹음, 반 남김" autocomplete="off"></details>';
