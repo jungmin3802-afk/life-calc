@@ -248,6 +248,13 @@ details.menu .in a{display:flex;align-items:center}
 .cpt{padding:4px 18px 6px;font-weight:800;font-size:1.05rem}
 
 .lgc{--pk:#0B9C6B}
+.lgh.dtx{background:linear-gradient(135deg,#FDBA74,#EA580C);box-shadow:0 8px 22px rgba(234,88,12,.28)}.dc{--pk:#EA580C}#dchart .bbar i{background:#EA580C}
+.dmeal{grid-template-columns:repeat(4,1fr)!important}.dtabs{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px}.dtabs button{margin:0;flex-shrink:0;width:auto;padding:7px 13px;border:1px solid var(--line);border-radius:18px;background:var(--bg);color:var(--ink);font-size:.85rem;font-weight:700;cursor:pointer}.dtabs button.on{background:#EA580C;color:#fff;border-color:#EA580C}
+.dchips{display:flex;flex-wrap:wrap;gap:7px}.dchips button{margin:0;width:auto;padding:8px 11px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font-size:.85rem;cursor:pointer;font-family:inherit}.dchips button small{color:var(--sub);margin-left:4px}.dchips button:active{background:#EA580C;color:#fff}
+.dmul{display:flex;align-items:center;gap:6px;margin-top:10px}.dmul span{color:var(--sub);font-size:.85rem;margin-right:4px}.dmul button{margin:0;width:auto;padding:7px 13px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font-weight:700;cursor:pointer}.dmul button.on{background:#EA580C;color:#fff;border-color:#EA580C}
+.dwr{display:flex;gap:8px;align-items:center}.dwr input{flex:1}.dwr span{color:var(--sub)}.dwr .sec{margin:0}
+.dml{display:flex;justify-content:space-between;padding:12px 0 4px;color:var(--sub);font-size:.85rem}.dml b{color:var(--ink)}
+
 .lgh{background:linear-gradient(135deg,#34D399,#0B7A63);color:#fff;border-radius:22px;padding:16px 18px 18px;margin-bottom:14px;box-shadow:0 8px 22px rgba(11,122,99,.28)}
 .lgm{display:flex;align-items:center;justify-content:space-between}.lgm b{font-size:1.05rem}.lgm button{margin:0;width:38px;height:38px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;font-size:1.3rem;cursor:pointer}
 .lgs{opacity:.9;font-size:.85rem;margin-top:10px}.lgb{font-size:2.3rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.2}.lgb small{font-size:1rem;font-weight:600;margin-left:3px}
