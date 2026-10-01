@@ -50,7 +50,7 @@ function draw(){var pr=predict(),A=pr.A,g=pr.g,h='';
  for(var i=0;i<first;i++)h+='<span class="cc e"></span>';
  for(var d=1;d<=n;d++){var s=y+'-'+pad(m+1)+'-'+pad(d),st=state(s,pr),x=D.sym[s],
   cls='cc pc'+(s===T?' td':'')+(s===sel?' sl':'')+(st.p?' pm':st.pp?' pp':st.f?' pf':'');
-  h+='<button type="button" class="'+cls+'" data-d="'+s+'"><b>'+d+'</b><em></em><span class="dt">'+(st.o?'<u>🥚</u>':x&&(x.p||(x.s||[]).length)?'<u class="pd"></u>':'')+'</span></button>'}
+  h+='<button type="button" class="'+cls+'" data-d="'+s+'"><b>'+d+'</b><em></em><span class="dt">'+(st.o?'<u>🥚</u>':x&&x.p>0?'<u>'+PL[x.p][0]+'</u>':x&&(x.s||[]).length?'<u class="pd"></u>':'')+'</span></button>'}
  $('pg').innerHTML=h;drawDay(pr);
  $('plist').innerHTML=g.length?g.slice().reverse().map(function(l,i){var idx=g.length-1-i,prev=idx>0?g[idx-1]:null,cyc=prev?diff(prev.s,l.s):0,bp=-1,bd='';
   for(var k=l.s;k<=l.e;k=add(k,1)){var x=D.sym[k];if(x&&x.p>bp&&x.p>0){bp=x.p;bd=k}}
