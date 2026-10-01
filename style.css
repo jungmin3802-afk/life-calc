@@ -200,6 +200,24 @@ details.menu .in a{display:flex;align-items:center}
 .ld b{display:block;font-size:1.05rem}.ld small{color:var(--sub);font-size:.85rem}
 .setd summary{cursor:pointer;font-weight:700}
 
+.lgh.pkh{background:linear-gradient(135deg,#F9A8D4,#BE185D);box-shadow:0 8px 22px rgba(190,24,93,.28)}.lgh.tdh{background:linear-gradient(135deg,#93C5FD,#2563EB);box-shadow:0 8px 22px rgba(37,99,235,.28)}
+.pcd{--pk:#D6336C}.pcd .lgsv{background:#D6336C}.tdc .lgsv{background:#2563EB}.pcd .dpb,.pcd input{margin-top:6px}
+.cc.pc.pm{background:color-mix(in srgb,#E0457B 22%,transparent)}.cc.pc.pp{border:1.5px dashed #E0457B}.cc.pc.pf{background:color-mix(in srgb,#22A06B 18%,transparent)}
+.cc.pc .dt{font-size:.8rem;height:1rem;line-height:1}.cc.pc .dt u{text-decoration:none}
+.plg{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;font-size:.8rem;color:var(--sub)}.plg i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:4px;vertical-align:-1px}.plg .a{background:color-mix(in srgb,#E0457B 40%,transparent)}.plg .b{border:1.5px dashed #E0457B}.plg .c{background:color-mix(in srgb,#22A06B 35%,transparent)}
+.tr,.tk{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.tr:last-child,.tk:last-child{border:0}
+.tn,.tt{flex:1;min-width:0;font-size:1rem}.tn b{display:block}.tn small,.tt small{display:block;color:var(--sub);font-size:.82rem}.tt small.late{color:#E5484D}
+.tr .x,.tk .x,.hb .x{margin:0;width:34px;height:34px;padding:0;border:0;border-radius:50%;background:var(--bg);color:var(--sub);font-size:1.2rem;cursor:pointer}
+.tdt{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.tdt button{margin:0;width:auto;min-height:48px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);color:var(--ink);font-size:1.05rem;font-weight:700;cursor:pointer}.tdt button.on{background:#2563EB;border-color:#2563EB;color:#fff}
+.tdc{--pk:#2563EB}.tdu{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}.tdu button{margin:0;width:auto;padding:8px 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--bg);color:var(--ink);font-size:.9rem;font-weight:600;cursor:pointer}.tdu button.on{border-color:#2563EB;background:color-mix(in srgb,#2563EB 14%,transparent);color:#2563EB}
+.ck{margin:0;width:28px;height:28px;padding:0;flex-shrink:0;border:2px solid var(--line);border-radius:50%;background:none;color:#fff;font-weight:800;cursor:pointer}.ck.on{background:#2563EB;border-color:#2563EB}
+.tk.dn .tt{text-decoration:line-through;color:var(--sub)}
+.tem{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px}.tem button{margin:0;width:auto;padding:7px 0;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);font-size:1.3rem;cursor:pointer}.tem button.on{border-color:#2563EB;background:color-mix(in srgb,#2563EB 14%,transparent)}
+.hb{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.hb:last-child{border:0}.hi{flex:1;min-width:0}.hi b{display:block}.hi small{color:var(--sub);font-size:.82rem}
+.hc{margin:0;width:56px;height:56px;padding:0;flex-shrink:0;border:2px solid var(--line);border-radius:50%;background:var(--bg);font-size:1.6rem;cursor:pointer;opacity:.55}.hc.on{opacity:1;border-color:#22A06B;background:color-mix(in srgb,#22A06B 20%,transparent)}.hc:active{transform:scale(.94)}
+.hdd{display:flex;gap:5px;margin-top:6px}.hdd i{width:14px;height:14px;border-radius:50%;background:var(--line)}.hdd i.on{background:#22A06B}
+.tdc summary{cursor:pointer;font-weight:700}
+
 .sg{display:grid;grid-template-columns:repeat(var(--n,2),minmax(0,1fr));gap:8px;margin:2px 0 4px}
 .sg button{margin:0;width:auto;min-height:48px;padding:8px 6px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg);color:var(--ink);font-size:.95rem;font-weight:600;line-height:1.25;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .08s,background .15s;-webkit-tap-highlight-color:transparent}
 .sg button:active{transform:scale(.96)}

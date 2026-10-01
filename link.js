@@ -25,6 +25,7 @@ var SP={
  rent:function(v,r){if(v.t!=0)return null;var a=num(row(r,/^월세$/)[1]);if(!a)return null;
   return{ask:'첫 월세일',def:nm(),cal:[{t:'월세 내는 날',rep:'m'}],led:[{t:'e',a:a,c:4,m:'월세',freq:'m'}]}},
  dday:function(v){if(!v.t)return null;return{ask:'날짜',def:v.t.toISOString().slice(0,10),title:'D-day',cal:[{t:'D-day',rep:''}],led:[]}},
+ bmr:function(v,r){var g=num(big(r)[1]);if(!g||!v.w)return null;return{diet:{goal:g,weight:v.w},cal:[],led:[]}},
  met:function(v){if(!v.s)return null;var t=ymd(new Date()),cal=[];
   [100,200,300,500,1000,2000,3000].forEach(function(k){var d=new Date(v.s.getTime()+(k-1)*864e5).toISOString().slice(0,10);if(d>=t)cal.push({t:'💕 '+k+'일',rep:'',fix:d})});
   return cal.length?{cal:cal,led:[]}:null}
@@ -65,6 +66,11 @@ function stepLed(){var sp=cur.sp,S=cur.S||sp.def||nm();var P=plan(sp,S,cur.title
    if(x.freq==='once')L.tx.push({id:'t'+id,t:x.t,a:x.a,c:x.c,m:x.m,d:x.st,_u:Date.now()});
    else L.rec.push({id:id,t:x.t,a:x.a,c:x.c,m:x.m,day:+x.st.slice(8),freq:x.freq,start:x.st,until:x.until||'',_u:Date.now()})});
   wr(K_LED,L);cur.ledDone=true;fin()}}
+function stepDiet(){var d=cur.sp.diet;
+ open('<h3>🍽️ 식단 기록에 설정할까요?</h3><p class="ls">식단 기록의 하루 목표 칼로리와 오늘 체중이 바뀌어요.</p><div class="lr"><span>하루 목표 칼로리</span><b>'+won(d.goal)+' kcal</b></div><div class="lr"><span>오늘 체중</span><b>'+d.weight+' kg</b></div><div class="la"><button class="n" id="lkx">취소</button><button class="y" id="lky">설정할게요</button></div>');
+ document.getElementById('lkx').onclick=close;
+ document.getElementById('lky').onclick=function(){var D=rd('lc_diet',{goal:1800,logs:[],w:{}});D.logs=D.logs||[];D.w=D.w||{};D.goal=d.goal;D.w[ymd(new Date())]=Math.round(d.weight*10)/10;wr('lc_diet',D);
+  open('<h3>✓ 설정했어요</h3><p class="ls">식단 기록의 하루 목표가 '+won(d.goal)+'kcal로 바뀌었어요.</p><a href="diet.html">🍽️ 식단 기록 열기</a><div class="la"><button class="n" id="lkx">닫기</button></div>');document.getElementById('lkx').onclick=close}}
 function next(){if(cur.sp.led.length)stepLed();else fin()}
 function fin(){var a=[];if(cur.calDone)a.push('<a href="calendar.html">📅 달력에서 보기</a>');if(cur.ledDone)a.push('<a href="ledger.html">📒 가계부에서 보기</a>');
  if(!a.length){close();return}
@@ -75,6 +81,6 @@ window.LCLink={attach:function(key,v,rows){var f=SP[key],sp=null;try{sp=f&&f(v,r
  var b=document.getElementById('lkb');
  if(!sp){if(b)b.remove();return}
  if(!b){b=document.createElement('button');b.id='lkb';b.type='button';var a=document.getElementById('share')||document.getElementById('tb');a.insertAdjacentElement('afterend',b)}
- b.textContent='📌 달력'+(sp.led.length?'·가계부':'')+'에 연동하기';
- b.onclick=function(){cur={sp:sp};step1()}}}
+ b.textContent=sp.diet?'🍽️ 식단 기록 목표로 설정하기':'📌 달력'+(sp.led.length?'·가계부':'')+'에 연동하기';
+ b.onclick=function(){cur={sp:sp};if(sp.diet)stepDiet();else step1()}}}
 })();
