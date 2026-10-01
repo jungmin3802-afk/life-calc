@@ -9,11 +9,19 @@ if(/^G-/.test(GA_ID)){var gs=document.createElement('script');gs.async=true;gs.s
 
 /* 다크모드 */
 var root=document.documentElement;
-function isDark(){var t=root.getAttribute('data-theme');return t?t==='dark':!!(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)}
-var saved=LS.get('theme',null);if(saved)root.setAttribute('data-theme',saved);
+function isDark(){return root.getAttribute('data-theme')!=='light'}
+var tcm=document.getElementById('tcm');
+var saved=LS.get('theme',null);root.setAttribute('data-theme',saved==='light'?'light':'dark');
 var tb=$('themebtn');
-function themeLabel(){if(tb)tb.textContent=isDark()?'라이트 모드로 보기':'다크 모드로 보기'}
-if(tb){themeLabel();tb.onclick=function(){var n=isDark()?'light':'dark';root.setAttribute('data-theme',n);LS.set('theme',n);themeLabel()}}
+function themeLabel(){if(tb)tb.textContent=isDark()?'라이트 모드로 보기':'다크 모드로 보기';
+ var d=isDark();if(tcm)tcm.setAttribute('content',d?'#0F1720':'#EEF3F6');
+ var o=$('thb');if(o)o.textContent=d?'☀️':'🌙';
+ Array.prototype.forEach.call(document.querySelectorAll('.thp button'),function(x){x.setAttribute('aria-pressed',String(x.getAttribute('data-th')===(d?'dark':'light')))})}
+function setTheme(n){root.setAttribute('data-theme',n);LS.set('theme',n);themeLabel()}
+themeLabel();
+if(tb)tb.onclick=function(){setTheme(isDark()?'light':'dark')};
+if($('thb'))$('thb').onclick=function(){setTheme(isDark()?'light':'dark')};
+Array.prototype.forEach.call(document.querySelectorAll('.thp button'),function(x){x.onclick=function(){setTheme(x.getAttribute('data-th'))}});
 
 /* 즐겨찾기·최근 */
 var fav=LS.get('fav',[]),rec=LS.get('rec',[]);
