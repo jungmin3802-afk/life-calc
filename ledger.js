@@ -22,6 +22,17 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp
 function ico(t,c){var L=t==='e'?EC:IC;return (L[c]||L[L.length-1])}
 function ym(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)}
 function month(){var p=ym(cur);return D.tx.filter(function(x){return x.d.slice(0,7)===p})}
+function cf(n){if(n>=10000){var m=n/10000;return (m>=100?Math.round(m):Math.round(m*10)/10)+'만'}return n.toLocaleString('ko-KR')}
+function drawCal(M){var y=cur.getFullYear(),m=cur.getMonth(),T={},h='',td=ymd(new Date());
+ M.forEach(function(x){var o=T[x.d]||(T[x.d]={e:0,i:0});if(x.t==='e')o.e+=x.a;else o.i+=x.a});
+ $('lct').textContent=y+'년 '+(m+1)+'월';
+ var first=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate(),k;
+ for(k=0;k<first;k++)h+='<span class="cc e"></span>';
+ for(k=1;k<=n;k++){var d=y+'-'+pad(m+1)+'-'+pad(k),o=T[d];
+  h+='<button type="button" class="cc lcc'+(d===td?' td':'')+(d===sel?' sl':'')+'" data-d="'+d+'"><b>'+k+'</b><span class="lci">'+(o&&o.i?cf(o.i):'')+'</span><span class="lce">'+(o&&o.e?cf(o.e):'')+'</span></button>'}
+ $('lcgr').innerHTML=h;
+ var so=sel&&sel.slice(0,7)===ym(cur)&&T[sel]||null;
+ $('lcsel').innerHTML=sel&&sel.slice(0,7)===ym(cur)?'<b>'+(+sel.slice(8))+'일</b> 선택 · <span class="lci">수입 '+won(so?so.i:0)+'</span> · <span class="lce">지출 '+won(so?so.e:0)+'</span><br><small>아래에서 이 날짜로 바로 기록할 수 있어요</small>':'날짜를 누르면 그 날짜로 기록할 수 있어요'}
 function draw(){
  var M=month(),e=0,i=0;M.forEach(function(x){if(x.t==='e')e+=x.a;else i+=x.a});
  $('lm').textContent=cur.getFullYear()+'년 '+(cur.getMonth()+1)+'월';
@@ -42,7 +53,7 @@ function draw(){
   return '<div class="ld2"><div class="dh3"><b>'+(+p[1])+'월 '+(+p[2])+'일 ('+WD[dt.getDay()]+')</b><span>'+(sum<0?'-':'+')+won(Math.abs(sum))+'원</span></div>'+L.map(function(x){var c=ico(x.t,x.c);
    return '<div class="tr"><span class="ti">'+c[1]+'</span><span class="tn"><b>'+c[0]+'</b>'+(x.m?'<small>'+esc(x.m)+'</small>':'')+'</span><span class="ta '+(x.t==='e'?'ex':'in')+'">'+(x.t==='e'?'-':'+')+won(x.a)+'</span><button type="button" class="x" data-x="'+x.id+'" aria-label="삭제">×</button></div>'}).join('')+'</div>'}).join(''):'<p class="note">이 달 기록이 없어요. 위에서 첫 내용을 입력해 보세요.</p>';
  if($('lrec'))$('lrec').innerHTML=D.rec.length?D.rec.map(function(r){var c=ico(r.t,r.c);return '<div class="tr"><span class="ti">'+c[1]+'</span><span class="tn"><b>'+esc(r.m)+'</b><small>'+(r.freq==='y'?'매년':'매월')+' '+r.day+'일'+(r.until?' · '+r.until+'까지':'')+'</small></span><span class="ta '+(r.t==='e'?'ex':'in')+'">'+(r.t==='e'?'-':'+')+won(r.a)+'</span><button type="button" class="x" data-rx="'+r.id+'" aria-label="끝내기">×</button></div>'}).join(''):'<p class="note">반복 내역이 없어요. 위에서 매월/매년을 고르거나 계산기에서 "달력·가계부에 연동"하면 여기에 생겨요.</p>';
- $('lbud').value=D.budget?won(D.budget):''}
+ $('lbud').value=D.budget?won(D.budget):'';drawCal(M)}
 function drawCats(){var L=type==='e'?EC:IC;$('lcg').innerHTML=L.map(function(c,k){return '<button type="button" data-c="'+k+'"'+(k===cat?' class="on"':'')+'><span>'+c[1]+'</span>'+c[0]+'</button>'}).join('');
  $('lt').innerHTML='<button type="button" data-t="e"'+(type==='e'?' class="on"':'')+'>지출</button><button type="button" data-t="i"'+(type==='i'?' class="on"':'')+'>수입</button>'}
 $('lt').addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(!b)return;type=b.getAttribute('data-t');cat=0;drawCats()});
@@ -61,6 +72,9 @@ $('lsave').onclick=function(){var a=parseInt(($('la').value||'0').replace(/\D/g,
  var f=$('lok');f.textContent='✓ '+(type==='e'?'지출':'수입')+' '+won(a)+'원 저장했어요';f.hidden=false;clearTimeout(f._t);f._t=setTimeout(function(){f.hidden=true},2500)};
 $('llist').addEventListener('click',function(e){var x=e.target.closest('[data-x]');if(x&&confirm('이 내역을 삭제할까요?')){var id=x.getAttribute('data-x');if(id.indexOf('r_')===0)D.rec.forEach(function(r){if(id.indexOf('r_'+r.id+'_')===0){r.sk=(r.sk||[]);r.sk.push(id);r._u=Date.now()}});D.tx=D.tx.filter(function(t){return t.id!==id});save();draw()}});
 var lr=$('lrec');if(lr){lr.addEventListener('click',function(e){var x=e.target.closest('[data-rx]');if(x&&confirm('이 반복 내역을 끝낼까요? (지난 기록은 그대로 남아요)')){var id=x.getAttribute('data-rx');D.rec=D.rec.filter(function(r){return r.id!==id});save();draw()}})}
+$('lcgr').addEventListener('click',function(ev){var b=ev.target.closest('[data-d]');if(!b)return;var d=b.getAttribute('data-d');sel=sel===d?null:d;if(sel)$('ld').value=sel;draw()});
+$('lcp').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()-1,1);sel=null;draw()};
+$('lcn').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);sel=null;draw()};
 $('lprev').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()-1,1);draw()};
 $('lnext').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);draw()};
 $('lbud').addEventListener('input',function(){var d=this.value.replace(/\D/g,'');this.value=d?Number(d).toLocaleString('ko-KR'):'';D.budget=parseInt(d||'0',10)||0;D.bu=Date.now();save();draw();$('lbud').value=d?Number(d).toLocaleString('ko-KR'):''});
