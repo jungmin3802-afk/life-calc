@@ -320,6 +320,16 @@ details.menu .in a{display:flex;align-items:center}
 .cr{display:flex;gap:10px;align-items:center;margin:10px 0}.ci{font-size:1.5rem}.cb{flex:1}.ct{display:flex;justify-content:space-between;font-size:.9rem}.ct span{color:var(--sub)}.bar{height:8px;border-radius:4px;background:var(--bg);margin-top:4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pk);border-radius:4px}
 .lgc .ok{background:color-mix(in srgb,#22A06B 16%,transparent);color:#178558;border-radius:12px;padding:10px 12px;font-weight:700;margin:10px 0 0}
 
+.chips.baby{margin:10px 0 16px;gap:8px}
+.hero{padding:22px 20px 20px;margin-bottom:18px}
+.hero .hs{margin-top:12px}
+.hero .hx{margin-top:16px;padding:12px 14px}
+.hero .hz{margin-top:12px;padding:12px 14px;line-height:1.6}
+.card.baby{margin-bottom:18px}
+.card.baby.bx .qs{margin-bottom:4px}
+.card.baby.bx .mr{margin-top:16px;gap:8px}
+.card.baby .sum{gap:10px}
+
 .gt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
 .gt th,.gt td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
 .gt th{background:var(--bg);font-weight:700}
