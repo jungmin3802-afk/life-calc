@@ -26,12 +26,13 @@
 <button type="button" id="mgo" class="lgsv mgo">🎲 메뉴 뽑기</button>
 <a id="msch" class="sec mlk" target="_blank" rel="noopener" hidden>📍 근처 맛집 검색</a></div>
 <div class="card mnc"><h3 class="hh" style="margin-top:0">최근 뽑은 메뉴</h3><div class="mh" id="mh"></div></div>
+<div class="card mnc"><h3 class="hh" style="margin-top:0">💳 오늘 누가 쏠까?</h3><div class="mcat py4" id="pyn"></div><div class="pyl" id="pyl"></div><div class="pyr" id="pyr"></div><button type="button" id="pygo" class="lgsv mgo">🎯 결제할 사람 뽑기</button></div>
 <div class="ad"><!-- 광고 영역 --></div>
 <section class="ios" aria-label="도움말">
 <details><summary>메뉴 추천란?</summary><div class="ib2"><p>점심·저녁 메뉴 고르기가 매번 고민일 때 쓰는 랜덤 메뉴 뽑기입니다. 한식, 중식, 일식, 양식, 분식, 아시아 음식, 야식·안주, 가벼운 식사 중에서 카테고리를 고르거나 전체에서 무작위로 뽑을 수 있고, 뽑은 메뉴는 이모지와 함께 보여줍니다. 마음에 안 들면 다시 뽑고, 최근 뽑은 메뉴 기록으로 겹치지 않게 골라 보세요.</p></div></details>
-<details><summary>사용 방법</summary><div class="ib2"><ol><li>먹고 싶은 종류의 카테고리 버튼을 누릅니다. 모르겠으면 전체를 그대로 둡니다.</li><li>메뉴 뽑기 버튼을 누르면 메뉴가 돌아가다가 하나가 정해집니다.</li><li>마음에 들지 않으면 다시 뽑기를 누릅니다.</li><li>근처 맛집 검색 버튼으로 바로 찾아볼 수 있습니다.</li></ol></div></details>
+<details><summary>사용 방법</summary><div class="ib2"><ol><li>먹고 싶은 종류의 카테고리 버튼을 누릅니다. 모르겠으면 전체를 그대로 둡니다.</li><li>메뉴 뽑기 버튼을 누르면 메뉴가 돌아가다가 하나가 정해집니다.</li><li>마음에 들지 않으면 다시 뽑기를 누릅니다.</li><li>근처 맛집 검색 버튼으로 바로 찾아볼 수 있습니다.</li><li>아래 &quot;오늘 누가 쏠까?&quot;에서 인원수를 고르고 이름을 적은 뒤 뽑기를 누르면 결제할 사람이 랜덤으로 정해집니다.</li></ol></div></details>
 <details><summary>알아두면 좋은 점</summary><div class="ib2"><ul><li>고민될 땐 카테고리부터 좁히면 빨리 정해져요.</li><li>세 번 안에 마음이 가는 메뉴가 나오면 그게 정답이에요.</li></ul></div></details>
-<details><summary>자주 묻는 질문</summary><div class="ib2"><details class='q'><summary>같은 메뉴가 연속으로 나오나요?</summary><p>바로 직전에 나온 메뉴는 다시 나오지 않게 했습니다.</p></details><details class='q'><summary>메뉴를 추가할 수 있나요?</summary><p>현재는 기본 메뉴 목록에서만 뽑습니다. 자주 먹는 메뉴 추가 기능은 추후 더할 예정입니다.</p></details><details class='q'><summary>칼로리도 알 수 있나요?</summary><p>이 화면에서는 칼로리를 보여주지 않습니다. 다이어트 식단 기록에서 음식별 대략 칼로리를 확인하세요.</p></details></div></details>
+<details><summary>자주 묻는 질문</summary><div class="ib2"><details class='q'><summary>같은 메뉴가 연속으로 나오나요?</summary><p>바로 직전에 나온 메뉴는 다시 나오지 않게 했습니다.</p></details><details class='q'><summary>결제할 사람 정하기는 공정한가요?</summary><p>매번 무작위로 뽑으며 이전 결과에 영향을 받지 않습니다. 이름은 이 기기에 저장되어 다음에도 그대로 쓸 수 있습니다.</p></details><details class='q'><summary>메뉴를 추가할 수 있나요?</summary><p>현재는 기본 메뉴 목록에서만 뽑습니다. 자주 먹는 메뉴 추가 기능은 추후 더할 예정입니다.</p></details><details class='q'><summary>칼로리도 알 수 있나요?</summary><p>이 화면에서는 칼로리를 보여주지 않습니다. 다이어트 식단 기록에서 음식별 대략 칼로리를 확인하세요.</p></details></div></details>
 </section>
 <div class="rel"><a href="weather.html">날씨·불쾌지수</a><a href="calculator.html">일반 계산기</a><a href="percent.html">퍼센트 계산기</a><a href="unit-convert.html">단위 변환기</a><a href="char-count.html">글자수 세기</a><a href="car-tax.html">자동차세 계산기</a></div>
 </main>
@@ -41,5 +42,5 @@
 <script src="common.js" defer></script>
 
 <script src="menu.js"></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "같은 메뉴가 연속으로 나오나요?", "acceptedAnswer": {"@type": "Answer", "text": "바로 직전에 나온 메뉴는 다시 나오지 않게 했습니다."}}, {"@type": "Question", "name": "메뉴를 추가할 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "현재는 기본 메뉴 목록에서만 뽑습니다. 자주 먹는 메뉴 추가 기능은 추후 더할 예정입니다."}}, {"@type": "Question", "name": "칼로리도 알 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "이 화면에서는 칼로리를 보여주지 않습니다. 다이어트 식단 기록에서 음식별 대략 칼로리를 확인하세요."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "같은 메뉴가 연속으로 나오나요?", "acceptedAnswer": {"@type": "Answer", "text": "바로 직전에 나온 메뉴는 다시 나오지 않게 했습니다."}}, {"@type": "Question", "name": "결제할 사람 정하기는 공정한가요?", "acceptedAnswer": {"@type": "Answer", "text": "매번 무작위로 뽑으며 이전 결과에 영향을 받지 않습니다. 이름은 이 기기에 저장되어 다음에도 그대로 쓸 수 있습니다."}}, {"@type": "Question", "name": "메뉴를 추가할 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "현재는 기본 메뉴 목록에서만 뽑습니다. 자주 먹는 메뉴 추가 기능은 추후 더할 예정입니다."}}, {"@type": "Question", "name": "칼로리도 알 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "이 화면에서는 칼로리를 보여주지 않습니다. 다이어트 식단 기록에서 음식별 대략 칼로리를 확인하세요."}}]}</script>
 </body></html>
