@@ -3,6 +3,10 @@ var S=window.LCStore,$=function(i){return document.getElementById(i)},pad=S.pad,
 var KEY='lc_cal';
 var D=S.get(KEY,{events:[],diary:{}});D.events=D.events||[];D.diary=D.diary||{};
 function save(){S.set(KEY,D);if(window.LCSync)LCSync.kick('cal')}
+var UID=(function(){var u=S.get('lc_uid',null);if(!u){u='u'+Date.now().toString(36)+Math.floor(Math.random()*1e6).toString(36);S.set('lc_uid',u)}return u})();
+var VK='lc_cal_vis',vis=S.get(VK,{me:true,sh:true});if(vis.me===undefined)vis.me=true;if(vis.sh===undefined)vis.sh=true;
+function isSh(e){return !!e.sh||(!!e.u&&e.u!==UID)}
+(function(){var c=0;D.events.forEach(function(e){if(!e.u&&!e.sh){e.u=UID;c=1}});if(c)S.set(KEY,D)})();
 var today=new Date(),cur=new Date(today.getFullYear(),today.getMonth(),1),sel=ymd(today);
 var WD=['일','월','화','수','목','금','토'];
 var MOODS=['😊','🥰','😐','😢','😡','😴'];
@@ -72,7 +76,7 @@ function occurs(ev,s){
  if(ev.rep==='m')return s.slice(8)===ev.date.slice(8);
  if(ev.rep==='y')return s.slice(5)===ev.date.slice(5);
  return s===ev.date}
-function evOn(s){return D.events.filter(function(e){return occurs(e,s)}).sort(function(a,b){return (a.time||'')<(b.time||'')?-1:1})}
+function evOn(s){return D.events.filter(function(e){return occurs(e,s)&&(isSh(e)?vis.sh:vis.me)}).sort(function(a,b){return (a.time||'')<(b.time||'')?-1:1})}
 // ---- 달력 그리기 ----
 function drawGrid(){
  var y=cur.getFullYear(),m=cur.getMonth();
@@ -82,7 +86,7 @@ function drawGrid(){
  for(var d=1;d<=n;d++){
   var s=y+'-'+pad(m+1)+'-'+pad(d),dt=new Date(y,m,d),w=dt.getDay(),hn=holName(s),ev=evOn(s),di=D.diary[s];
   var cls='cc'+(s===ymd(today)?' td':'')+(s===sel?' sl':'')+(w===0||hn?' su':w===6?' sa':'');
-  var dots='';ev.slice(0,3).forEach(function(e){dots+='<i style="background:'+e.color+'"></i>'});
+  var dots='';ev.slice(0,3).forEach(function(e){dots+=isSh(e)?'<i class="shi" style="border-color:'+e.color+'"></i>':'<i style="background:'+e.color+'"></i>'});
   h+='<button type="button" class="'+cls+'" data-d="'+s+'" aria-label="'+(m+1)+'월 '+d+'일'+(hn?' '+hn:'')+(ev.length?' 일정 '+ev.length+'개':'')+'"><b>'+d+'</b><em>'+(hn?hn.replace(' 연휴',''):'')+'</em><span class="dt">'+dots+'</span></button>'}
  $('cg').innerHTML=h}
 function drawDay(){
@@ -93,7 +97,7 @@ function drawDay(){
  h+='<h3 class="hh">일정</h3>';
  if(!ev.length)h+='<p class="note">등록된 일정이 없습니다.</p>';
  ev.forEach(function(e){
-  h+='<div class="ev" style="border-left-color:'+e.color+'"><div class="et"><b>'+(e.type==='bday'?'🎂 ':'')+esc(e.title)+'</b><small>'+evSub(e,sel)+(e.al!==''&&e.al!=null?' · 🔔'+alLabel(+e.al):'')+'</small></div><div class="ea"><button type="button" class="sec" data-ics="'+e.id+'">📲 폰에 추가</button><button type="button" class="sec" data-del="'+e.id+'" aria-label="삭제">삭제</button></div></div>'});
+  h+='<div class="ev'+(isSh(e)?' sh':'')+'" style="border-left-color:'+e.color+'"><div class="et"><b>'+(isSh(e)?'<span class="shb">👥 공유</span>':'')+(e.type==='bday'?'🎂 ':'')+esc(e.title)+'</b><small>'+evSub(e,sel)+(e.al!==''&&e.al!=null?' · 🔔'+alLabel(+e.al):'')+'</small></div><div class="ea"><button type="button" class="sec" data-ics="'+e.id+'">📲 폰에 추가</button>'+(isSh(e)?'<button type="button" class="sec" data-mine="'+e.id+'">내 일정으로</button>':'')+'<button type="button" class="sec" data-del="'+e.id+'" aria-label="삭제">삭제</button></div></div>'});
  h+=addForm();
  $('cday').innerHTML=h}
 var eK='e',eC='s',draft={t:'',bd:'',leap:false,ny:false},addOpen=false;
@@ -122,7 +126,11 @@ function drawUp(){
  var h='';out.slice(0,8).forEach(function(o){var p=o[0].split('-');
   h+='<button type="button" class="upi" data-go="'+o[0]+'"><span class="ud" style="background:'+o[2].color+'">'+(o[1]===0?'오늘':'D-'+o[1])+'</span><span><b>'+esc(o[2].title)+'</b><small>'+(+p[1])+'/'+(+p[2])+' '+(o[2].time||'종일')+'</small></span></button>'});
  $('cup').innerHTML=h||'<p class="note">앞으로 60일 안에 등록된 일정이 없습니다.</p>'}
-function all(){drawGrid();drawDay();drawUp()}
+function cnt(f){return D.events.filter(function(e){return f(isSh(e))}).length}
+function drawVis(){var b=$('cvis');if(!b)return;b.innerHTML='<button type="button" data-v="me" class="'+(vis.me?'on':'')+'"><i></i>내 일정 <small>'+cnt(function(x){return !x})+'</small></button><button type="button" data-v="sh" class="shv '+(vis.sh?'on':'')+'"><i></i>공유자 <small>'+cnt(function(x){return x})+'</small></button>'}
+(function(){var cw=document.querySelector('#cg').parentNode.querySelector('.cw'),d=document.createElement('div');d.id='cvis';d.className='cvis';cw.parentNode.insertBefore(d,cw);
+ d.addEventListener('click',function(e){var b=e.target.closest('[data-v]');if(!b)return;var k=b.getAttribute('data-v');vis[k]=!vis[k];S.set(VK,vis);all()})})();
+function all(){drawVis();drawGrid();drawDay();drawUp()}
 $('cprev').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()-1,1);drawGrid()};
 $('cnext').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);drawGrid()};
 $('ctoday').onclick=function(){cur=new Date(today.getFullYear(),today.getMonth(),1);sel=ymd(today);all()};
@@ -132,16 +140,17 @@ $('cup').addEventListener('click',function(e){var b=e.target.closest('[data-go]'
 $('cday').addEventListener('click',function(e){
  var t=e.target;
  var mo=t.closest('.mo');if(mo){var v=mo.getAttribute('data-m'),o=D.diary[sel]||(D.diary[sel]={});o.mood=o.mood===v?'':v;save();drawGrid();drawDay();return}
+ var mn=t.closest('[data-mine]');if(mn){var id2=mn.getAttribute('data-mine');D.events.forEach(function(x){if(x.id===id2){x.sh=0;x.u=UID}});save();all();S.notify('내 일정으로 옮겼어요','');return}
  var del=t.closest('[data-del]');if(del){var id=del.getAttribute('data-del');if(confirm('이 일정을 삭제할까요? (반복 일정이면 모든 날짜에서 삭제됩니다)')){D.events=D.events.filter(function(x){return x.id!==id});save();all()}return}
  var ic=t.closest('[data-ics]');if(ic){var ev=D.events.filter(function(x){return x.id===ic.getAttribute('data-ics')})[0];if(ev&&!S.download(ev.title+'.ics',ics([ev]),'text/calendar'))S.notify('저장 실패','이 화면에서는 파일을 내려받을 수 없습니다. 실제 주소에서 사용해 보세요.');return}
  var kb=t.closest('#ekind [data-k]');if(kb){keep();eK=kb.getAttribute('data-k');addOpen=true;drawDay();return}
  var cb=t.closest('#ecal [data-c]');if(cb){keep();eC=cb.getAttribute('data-c');addOpen=true;drawDay();return}
  if(t.id==='eadd'&&eK==='b'){var nm=$('et').value.trim(),bd=$('ebd').value;if(!nm){$('et').focus();return}if(!bd){S.notify('생일 날짜를 골라 주세요','날짜 칸을 눌러 선택할 수 있어요.');return}
   var q=bd.split('-'),lp=$('elp')&&$('elp').checked;
-  D.events.push({id:'e'+Date.now().toString(36)+Math.floor(Math.random()*1e4),title:nm+' 생일',type:'bday',cal:eC==='l'?'lunar':'solar',y:$('eny').checked?0:+q[0],m:+q[1],d:+q[2],leap:!!lp,date:bd,time:'',al:$('eal').value,rep:'y',color:COLORS[0]});
+  D.events.push({id:'e'+Date.now().toString(36)+Math.floor(Math.random()*1e4),u:UID,title:nm+' 생일',type:'bday',cal:eC==='l'?'lunar':'solar',y:$('eny').checked?0:+q[0],m:+q[1],d:+q[2],leap:!!lp,date:bd,time:'',al:$('eal').value,rep:'y',color:COLORS[0]});
   draft={t:'',bd:'',leap:false,ny:false};addOpen=false;save();all();return}
  if(t.id==='eadd'){var ti=$('et').value.trim();if(!ti){$('et').focus();return}
-  D.events.push({id:'e'+Date.now().toString(36)+Math.floor(Math.random()*1e4),title:ti,date:sel,time:$('etm').value,al:$('eal').value,rep:$('ere').value,color:$('eco').value});
+  D.events.push({u:UID,id:'e'+Date.now().toString(36)+Math.floor(Math.random()*1e4),title:ti,date:sel,time:$('etm').value,al:$('eal').value,rep:$('ere').value,color:$('eco').value});
   draft.t='';addOpen=false;save();all()}
 });
 $('cday').addEventListener('input',function(e){if(e.target.id==='dtx'){var o=D.diary[sel]||(D.diary[sel]={});o.text=e.target.value;if(!o.text&&!o.mood)delete D.diary[sel];save();drawGrid()}});
@@ -177,10 +186,10 @@ function check(){
 $('cnoti').onclick=function(){S.ask(function(p){var m=p==='granted'?'알림이 켜졌습니다. 이 페이지가 열려 있을 때 시간에 맞춰 울립니다.':p==='unsupported'?'이 브라우저는 알림을 지원하지 않아요. 화면 안 알림과 폰 캘린더(.ics)를 이용해 주세요.':'알림이 차단되었습니다. 브라우저 설정에서 허용해 주세요.';$('cnmsg').textContent=m;})};
 if(!S.persistent())$('cwarn').hidden=false;
 all();check();setInterval(check,20000);document.addEventListener('visibilitychange',function(){if(!document.hidden){today=new Date();check()}});
-$('cshare').onclick=function(){S.share('cal','우리 일정 공유',{events:D.events,diary:{}})};
+$('cshare').onclick=function(){S.share('cal','내 일정 공유',{events:D.events.filter(function(e){return !isSh(e)}),diary:{}})};
 S.incoming('cal').then(function(o){if(!o||!o.events)return;S.clearHash();
  var n=o.events.filter(function(e){return !D.events.some(function(x){return x.id===e.id})});
- if(confirm('공유받은 일정을 합칠까요?\n(새 일정 '+n.length+'개 추가, 내 일정은 그대로 유지)')){D.events=D.events.concat(n);save();all();S.notify('합치기 완료','일정 '+n.length+'개를 추가했어요')}});
+ if(confirm('공유받은 일정을 합칠까요?\n(새 일정 '+n.length+'개 추가, 내 일정은 그대로 유지)')){D.events=D.events.concat(n.map(function(e){e.sh=1;return e}));vis.sh=true;S.set(VK,vis);drawVis();save();all();S.notify('합치기 완료','일정 '+n.length+'개를 추가했어요')}});
 if(window.LCSync&&$('csync'))LCSync.mount($('csync'),'cal',{
  get:function(){var m={};D.events.forEach(function(e){m[e.id]=e});return {events:m}},
  set:function(c2,m){D.events=Object.keys(m).map(function(k){return m[k]})},
