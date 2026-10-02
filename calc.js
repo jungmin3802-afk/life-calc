@@ -231,6 +231,57 @@ C.push({k:'bmr',n:'기초대사량',nt:'미플린-세인트 지어 공식을 쓴
   g=v.g==0?Math.max(t-500,b):v.g==2?t+300:t,lb=['체중 감량','체중 유지','체중 증량'][v.g];
   return[['기초대사량 (BMR)',won(b)+' kcal'],['활동량 반영 유지 칼로리',won(t)+' kcal'],['하루 목표 칼로리 ('+lb+')',won(g)+' kcal',1]]}});
 
+(function(){
+function nn(x){return Math.round(x).toLocaleString('ko-KR')}
+function dt(d){return d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일'}
+function ad(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x}
+function tm(sec){sec=Math.round(sec);var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return(h?h+'시간 ':'')+m+'분 '+(s<10?'0':'')+s+'초'}
+function pc(sec){sec=Math.round(sec);return Math.floor(sec/60)+"'"+((sec%60)<10?'0':'')+(sec%60)+'"'}
+C.push(
+{k:'duedate',n:'출산예정일',nt:'네겔레 법칙(마지막 생리 시작일+280일)에 주기 보정을 한 참고용 날짜입니다. 실제 예정일은 초음파 검사 결과로 병원에서 정해집니다.',
+ f:[['d','마지막 생리 시작일','date'],['c','생리 주기 (일)','num',28]],
+ run:function(v){if(!v.d)return null;var c=v.c||28,due=ad(v.d,280+(c-28)),t=new Date();t.setHours(0,0,0,0);
+  var el=Math.floor((t-v.d)/864e5)-(c-28),w=Math.floor(el/7),dd=el%7,left=Math.round((due-t)/864e5),
+  tri=w<14?'1분기 (~13주)':w<28?'2분기 (14~27주)':'3분기 (28주~)';
+  var r=[['출산예정일',dt(due),1]];
+  if(el<0)return r.concat([['안내','시작일이 오늘 이후입니다']]);
+  r.push(['현재 임신 주수',w+'주 '+dd+'일']);
+  r.push([left>=0?'출산까지':'예정일 경과',(left>=0?'D-'+left:Math.abs(left)+'일')]);
+  r.push(['현재 시기',tri]);
+  r.push(['안정기 (12주 이후)',dt(ad(v.d,84+(c-28)))]);
+  r.push(['만삭 (37주)',dt(ad(v.d,259+(c-28)))]);return r}},
+{k:'pleave',n:'육아휴직 급여',nt:'고용보험 육아휴직급여의 간이 계산(통상임금 기준, 1~3개월 100% 상한 250만 원 / 4~6개월 100% 상한 200만 원 / 7개월~ 80% 상한 160만 원, 하한 70만 원)입니다. 제도는 해마다 바뀌고 특례가 있으니 고용보험 사이트에서 확인하세요.',
+ f:[['w','월 통상임금 (원)','num'],['m','휴직 기간 (개월)','num',12]],
+ run:function(v){if(!v.w||!v.m)return null;var m=Math.min(v.m,12),rows=[],tot=0,i,p,cap,lo=700000;
+  for(i=1;i<=Math.ceil(m);i++){var f=Math.min(1,m-i+1);if(i<=3){p=v.w;cap=2500000}else if(i<=6){p=v.w;cap=2000000}else{p=v.w*0.8;cap=1600000}
+   p=Math.max(Math.min(p,cap),lo);tot+=p*f}
+  var a=Math.max(Math.min(v.w,2500000),lo),b=Math.max(Math.min(v.w,2000000),lo),c=Math.max(Math.min(v.w*0.8,1600000),lo);
+  var r=[['1~3개월 월 급여',won(a)]];if(m>3)r.push(['4~6개월 월 급여',won(b)]);if(m>6)r.push(['7개월~ 월 급여',won(c)]);
+  r.push(['총 예상 급여 ('+m+'개월)',won(tot),1]);r.push(['월 평균',won(tot/m)]);return r}},
+{k:'pace',n:'러닝 페이스',nt:'리겔 공식으로 예상한 기록은 컨디션·코스에 따라 달라지는 참고용 값입니다.',
+ f:[['d','거리 (km)','num',5],['m','시간 (분)','num',30],['s','시간 (초)','num',0]],
+ run:function(v){var t=(v.m||0)*60+(v.s||0);if(!v.d||!t)return null;var pk=t/v.d;
+  var r=[['페이스 (km당)',pc(pk)+' /km',1],['속도',(v.d/t*3600).toFixed(2)+' km/h']];
+  [[5,'5km'],[10,'10km'],[21.0975,'하프'],[42.195,'풀코스']].forEach(function(x){r.push(['예상 '+x[1],tm(t*Math.pow(x[0]/v.d,1.06))])});return r}},
+{k:'burn',n:'운동 소모 칼로리',nt:'MET 값으로 계산한 평균적인 추정치입니다. 강도와 체질에 따라 실제와 다를 수 있습니다.',
+ f:[['a','운동 종류','sel',['걷기','빠르게 걷기','조깅','달리기','자전거','수영','등산','웨이트','줄넘기','요가','계단 오르기']],['w','몸무게 (kg)','num'],['m','운동 시간 (분)','num',30]],
+ run:function(v){if(!v.w||!v.m)return null;var MET=[3.5,4.3,7,9.8,7.5,8,6.5,5,11,2.5,8.8][v.a],k=MET*v.w*(v.m/60)*1.05;
+  return[['소모 칼로리',nn(k)+' kcal',1],['밥 한 공기(300kcal) 환산',(k/300).toFixed(1)+'공기'],['치킨 1조각(약 250kcal) 환산',(k/250).toFixed(1)+'조각'],['운동 강도 (MET)',MET+'']]}},
+{k:'orm',n:'1RM 계산',nt:'엡리·브르지키 공식의 평균으로 추정한 값입니다. 10회 이하 세트일수록 정확하며 실제 최대 중량을 시도할 때는 보조자와 함께 안전하게 하세요.',
+ f:[['w','들어올린 무게 (kg)','num'],['r','반복 횟수 (회)','num',5]],
+ run:function(v){if(!v.w||!v.r||v.r>30)return null;var e=v.w*(1+v.r/30),b=v.r<37?v.w*36/(37-v.r):e,o=(e+b)/2;
+  var r=[['예상 1RM',o.toFixed(1)+' kg',1]];[95,90,85,80,75,70,60].forEach(function(p){r.push([p+'% 무게',(o*p/100).toFixed(1)+' kg'])});return r}},
+{k:'petage',n:'반려동물 나이 환산',nt:'널리 쓰이는 환산 방식(1살=15세, 2살=24세, 이후 크기별 연 4~6세 추가)입니다. 품종과 개체마다 다릅니다.',
+ f:[['t','종류·크기','sel',['소형견 (10kg 미만)','중형견 (10~25kg)','대형견 (25kg 이상)','고양이']],['a','나이 (살, 6개월은 0.5)','num']],
+ run:function(v){if(!v.a)return null;var a=v.a,add=[4,5,6,4][v.t],h=a<=1?a*15:a<=2?15+(a-1)*9:24+(a-2)*add,st=a<1?'아기':a<3?'청소년':a<7?'성년':a<11?'중년':'노년';
+  return[['사람 나이로',Math.round(h)+'세',1],['생애 단계',st]]}},
+{k:'petfood',n:'반려동물 사료량',nt:'휴식 에너지(RER) 공식으로 추정한 하루 권장량입니다. 개체의 건강 상태에 따라 다르므로 수의사와 상담하세요. 사료 포장지의 급여량도 함께 확인하세요.',
+ f:[['t','종류','sel',['강아지·성견','고양이']],['w','몸무게 (kg)','num'],['s','상태','sel',['중성화 완료','중성화 전','체중 감량 중','성장기 (1살 미만)','노령']],['k','사료 열량 (kcal/kg)','num',3500]],
+ run:function(v){if(!v.w||!v.k)return null;var f=v.t==0?[1.6,1.8,1.0,2.0,1.4][v.s]:[1.2,1.4,0.8,2.5,1.1][v.s],rer=70*Math.pow(v.w,0.75),k=rer*f,g=k/v.k*1000;
+  return[['하루 권장 열량',nn(k)+' kcal'],['하루 사료량',nn(g)+' g',1],['2회 급여 시 1회',nn(g/2)+' g'],['기초 에너지 (RER)',nn(rer)+' kcal']]}}
+);
+})();
+
 var cur=C.findIndex(function(c){return c.k===window.CALC_KEY});var c=C[cur];
 function build(){var h='';
  document.getElementById('nt').textContent=c.nt;
