@@ -14,7 +14,7 @@ function draw(){
  var has=D&&D.d;$('dusetup').hidden=has;$('duview').hidden=!has;
  if(!has){return}
  var due=P(D.d),r=DUEW(due),cur=Math.max(4,Math.min(40,r.w));if(vw===null)vw=cur;
- $('duin').value=D.d;
+ $('duin').value=D.d;$('dupin').textContent=D.pin===false?'📌 홈 상단에 고정하기':'📌 홈 상단 고정 해제';
  var big=r.days<0?'아직 임신 전이에요':r.w>=40&&r.left<0?'예정일이 지났어요':r.w+'주 '+r.d+'일';
  $('dubig').textContent=big;
  $('dusub').textContent=r.left>=0?'출산예정일까지 D-'+r.left+' · '+due.getFullYear()+'.'+(due.getMonth()+1)+'.'+due.getDate():'예정일에서 '+Math.abs(r.left)+'일 지났어요';
@@ -28,9 +28,10 @@ function draw(){
  var c=care(vw);$('duct').textContent=c[0]+' 주의할 점';
  $('dulist').innerHTML=c.slice(1).map(function(x){return'<li>'+x+'</li>'}).join('');
  $('duprev').disabled=vw<=4;$('dunext').disabled=vw>=40}
-$('dusave').onclick=function(){var v=$('duin0').value;if(!v){$('duin0').focus();return}D={d:v};S.set(KEY,D);vw=null;draw()};
-$('duin').onchange=function(){if($('duin').value){D={d:$('duin').value};S.set(KEY,D);vw=null;draw()}};
+$('dusave').onclick=function(){var v=$('duin0').value;if(!v){$('duin0').focus();return}D={d:v,pin:true};S.set(KEY,D);vw=null;draw()};
+$('duin').onchange=function(){if($('duin').value){D={d:$('duin').value,pin:D.pin!==false};S.set(KEY,D);vw=null;draw()}};
 $('duprev').onclick=function(){vw=Math.max(4,vw-1);draw()};
 $('dunext').onclick=function(){vw=Math.min(40,vw+1);draw()};
+$('dupin').onclick=function(){D.pin=D.pin===false;S.set(KEY,D);draw()};
 $('duclr').onclick=function(){D=null;S.set(KEY,null);vw=null;draw()};
 draw()})();
