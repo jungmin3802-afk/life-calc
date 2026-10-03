@@ -44,7 +44,7 @@ function draw(){
  // 카테고리
  var cs={};M.forEach(function(x){if(x.t==='e')cs[x.c]=(cs[x.c]||0)+x.a});
  var ks=Object.keys(cs).sort(function(a,b){return cs[b]-cs[a]});
- $('lcat').innerHTML=ks.length?ks.map(function(k){var c=ico('e',+k),p=e?cs[k]/e*100:0;return '<div class="cr"><span class="ci">'+c[1]+'</span><div class="cb"><div class="ct"><b>'+c[0]+'</b><span>'+won(cs[k])+'원 · '+Math.round(p)+'%</span></div><div class="bar"><i style="width:'+Math.max(2,p)+'%"></i></div></div></div>'}).join(''):'<p class="note">이 달의 지출 기록이 없어요.</p>';
+ if($('lcat'))$('lcat').innerHTML=ks.length?ks.map(function(k){var c=ico('e',+k),p=e?cs[k]/e*100:0;return '<div class="cr"><span class="ci">'+c[1]+'</span><div class="cb"><div class="ct"><b>'+c[0]+'</b><span>'+won(cs[k])+'원 · '+Math.round(p)+'%</span></div><div class="bar"><i style="width:'+Math.max(2,p)+'%"></i></div></div></div>'}).join(''):'<p class="note">이 달의 지출 기록이 없어요.</p>';
  // 목록
  var days={};M.forEach(function(x){(days[x.d]=days[x.d]||[]).push(x)});
  var ds=Object.keys(days).sort().reverse();
@@ -53,7 +53,53 @@ function draw(){
   return '<div class="ld2"><div class="dh3"><b>'+(+p[1])+'월 '+(+p[2])+'일 ('+WD[dt.getDay()]+')</b><span>'+(sum<0?'-':'+')+won(Math.abs(sum))+'원</span></div>'+L.map(function(x){var c=ico(x.t,x.c);
    return '<div class="tr"><span class="ti">'+c[1]+'</span><span class="tn"><b>'+c[0]+'</b>'+(x.m?'<small>'+esc(x.m)+'</small>':'')+'</span><span class="ta '+(x.t==='e'?'ex':'in')+'">'+(x.t==='e'?'-':'+')+won(x.a)+'</span><button type="button" class="x" data-x="'+x.id+'" aria-label="삭제">×</button></div>'}).join('')+'</div>'}).join(''):'<p class="note">이 달 기록이 없어요. 위에서 첫 내용을 입력해 보세요.</p>';
  if($('lrec'))$('lrec').innerHTML=D.rec.length?D.rec.map(function(r){var c=ico(r.t,r.c);return '<div class="tr"><span class="ti">'+c[1]+'</span><span class="tn"><b>'+esc(r.m)+'</b><small>'+(r.freq==='y'?'매년':'매월')+' '+r.day+'일'+(r.until?' · '+r.until+'까지':'')+'</small></span><span class="ta '+(r.t==='e'?'ex':'in')+'">'+(r.t==='e'?'-':'+')+won(r.a)+'</span><button type="button" class="x" data-rx="'+r.id+'" aria-label="끝내기">×</button></div>'}).join(''):'<p class="note">반복 내역이 없어요. 위에서 매월/매년을 고르거나 계산기에서 "달력·가계부에 연동"하면 여기에 생겨요.</p>';
- $('lbud').value=D.budget?won(D.budget):'';drawCal(M)}
+ $('lbud').value=D.budget?won(D.budget):'';drawCal(M);drawRep(M)}
+
+var CLR=['#FF6B6B','#FFA94D','#FFD43B','#69DB7C','#38D9A9','#4DABF7','#9775FA','#F783AC','#A9A9B3','#66D9E8','#B197FC'];
+var rtab='k';
+function prevM(){return new Date(cur.getFullYear(),cur.getMonth()-1,1)}
+function sums(arr){var e=0,i=0,c={};arr.forEach(function(x){if(x.t==='e'){e+=x.a;c[x.c]=(c[x.c]||0)+x.a}else i+=x.a});return{e:e,i:i,c:c}}
+function drawRep(M){var el=$('lrep');if(!el)return;
+ var A=sums(M),pm=ym(prevM()),PM=D.tx.filter(function(x){return x.d.slice(0,7)===pm}),B=sums(PM),h='';
+ var net=A.i-A.e,dm=dim(cur.getFullYear(),cur.getMonth()),now=new Date(),isNow=ym(cur)===ym(now),dn=isNow?now.getDate():dm;
+ var title=(cur.getMonth()+1)+'월 리포트';
+ if(!M.length){el.innerHTML='<div class="card lgc"><p class="note" style="margin:0">'+(cur.getMonth()+1)+'월 기록이 없어요. 기록 탭에서 지출과 수입을 먼저 입력해 보세요.</p></div>';return}
+ // 요약
+ var df=A.e-B.e,dtxt=PM.length?(df===0?'지난달과 같아요':'지난달보다 <b class="'+(df>0?'up':'dn')+'">'+won(Math.abs(df))+'원 '+(df>0?'더 썼어요':'덜 썼어요')+'</b>'):'지난달 기록이 없어요';
+ h+='<div class="card lgc rsum"><div class="rs3"><div><span>수입</span><b class="in">'+won(A.i)+'</b></div><div><span>지출</span><b class="ex">'+won(A.e)+'</b></div><div><span>남은 돈</span><b>'+(net<0?'-':'')+won(Math.abs(net))+'</b></div></div><p class="rcm">'+dtxt+'</p></div>';
+ // 도넛
+ var ks=Object.keys(A.c).sort(function(a,b){return A.c[b]-A.c[a]});
+ if(ks.length){var R=52,C=2*Math.PI*R,off=0,seg='',leg='';
+  ks.forEach(function(k,n){var f=A.c[k]/A.e,len=f*C,col=CLR[n%CLR.length],c=ico('e',+k);
+   seg+='<circle cx="70" cy="70" r="'+R+'" fill="none" stroke="'+col+'" stroke-width="22" stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 70 70)"/>';off+=len;
+   var d=PM.length?(A.c[k]-(B.c[k]||0)):null;
+   leg+='<div class="rlg"><i style="background:'+col+'"></i><span class="rn">'+c[1]+' '+c[0]+'</span><span class="rv">'+won(A.c[k])+'원 · '+Math.round(f*100)+'%'+(d===null||d===0?'':' <em class="'+(d>0?'up':'dn')+'">'+(d>0?'▲':'▼')+cf(Math.abs(d))+'</em>')+'</span></div>'});
+  h+='<div class="card lgc"><h3 class="hh" style="margin-top:0">어디에 썼나요</h3><div class="rdn"><svg viewBox="0 0 140 140" width="160" height="160" role="img" aria-label="분류별 지출 비율">'+seg+'<text x="70" y="66" text-anchor="middle" class="rt1">총 지출</text><text x="70" y="86" text-anchor="middle" class="rt2">'+cf(A.e)+'원</text></svg></div>'+leg+'<p class="note" style="margin:10px 0 0">▲▼는 지난달 대비 증감이에요.</p></div>'}
+ // 일별 막대
+ var dd=[],mx=0,mxd=0;for(var d=1;d<=dm;d++){dd.push(0)}
+ M.forEach(function(x){if(x.t==='e'){var dy=+x.d.slice(8);dd[dy-1]+=x.a}});
+ dd.forEach(function(v,n){if(v>mx){mx=v;mxd=n+1}});
+ if(mx){h+='<div class="card lgc"><h3 class="hh" style="margin-top:0">날짜별 지출</h3><div class="rdb">'+dd.map(function(v,n){return'<i class="'+(n+1===mxd?'mx':'')+'" style="height:'+Math.max(v?4:0,v/mx*100)+'%" title="'+(n+1)+'일 '+won(v)+'원"></i>'}).join('')+'</div><div class="rdx"><span>1일</span><span>'+Math.ceil(dm/2)+'일</span><span>'+dm+'일</span></div></div>'}
+ // 인사이트
+ var ins=[];
+ if(ks.length){var t0=ks[0];ins.push('가장 많이 쓴 곳은 <b>'+ico('e',+t0)[0]+'</b>이에요 ('+Math.round(A.c[t0]/A.e*100)+'%, '+won(A.c[t0])+'원).')}
+ if(A.e)ins.push('하루 평균 <b>'+won(A.e/dn)+'원</b>을 썼어요.');
+ if(mx)ins.push('가장 많이 쓴 날은 <b>'+(cur.getMonth()+1)+'월 '+mxd+'일</b>('+won(mx)+'원)이에요.');
+ var fx=0;M.forEach(function(x){if(x.t==='e'&&String(x.id).indexOf('r_')===0)fx+=x.a});
+ if(fx&&A.e)ins.push('고정 지출은 전체의 <b>'+Math.round(fx/A.e*100)+'%</b>('+won(fx)+'원)예요.');
+ if(A.i>0)ins.push(net>=0?'수입의 <b>'+Math.round(net/A.i*100)+'%</b>를 남겼어요.':'수입보다 <b>'+won(-net)+'원</b> 더 썼어요.');
+ if(D.budget>0)ins.push(A.e<=D.budget?'월 예산의 <b>'+Math.round(A.e/D.budget*100)+'%</b>를 썼어요.':'월 예산을 <b>'+won(A.e-D.budget)+'원</b> 넘겼어요.');
+ h+='<div class="card lgc"><h3 class="hh" style="margin-top:0">한눈에 보기</h3><ul class="rin">'+ins.map(function(x){return'<li>'+x+'</li>'}).join('')+'</ul><button type="button" class="sh" id="lrsh">📋 리포트 복사·공유</button></div>';
+ // 연간
+ var Y=cur.getFullYear(),ye=[],yi=[],ym2=0,k2;for(k2=0;k2<12;k2++){ye.push(0);yi.push(0)}
+ D.tx.forEach(function(x){if(+x.d.slice(0,4)===Y){var mo=+x.d.slice(5,7)-1;if(x.t==='e')ye[mo]+=x.a;else yi[mo]+=x.a}});
+ ye.concat(yi).forEach(function(v){if(v>ym2)ym2=v});
+ var te=0,ti=0;ye.forEach(function(v){te+=v});yi.forEach(function(v){ti+=v});
+ h+='<div class="card lgc"><h3 class="hh" style="margin-top:0">'+Y+'년 흐름</h3><div class="ryr">'+ye.map(function(v,n){return'<div class="rym"><div class="ryb"><i class="yi" style="height:'+(ym2?yi[n]/ym2*100:0)+'%"></i><i class="ye" style="height:'+(ym2?v/ym2*100:0)+'%"></i></div><span class="'+(n===cur.getMonth()?'on':'')+'">'+(n+1)+'</span></div>'}).join('')+'</div><div class="lcl"><span class="lci">● 수입 '+cf(ti)+'원</span><span class="lce">● 지출 '+cf(te)+'원</span></div></div>';
+ el.innerHTML=h;
+ var sb=$('lrsh');if(sb)sb.onclick=function(){var t=Y+'년 '+title+'\n수입 '+won(A.i)+'원 / 지출 '+won(A.e)+'원 / 남은 돈 '+(net<0?'-':'')+won(Math.abs(net))+'원\n'+ins.map(function(x){return'· '+x.replace(/<[^>]+>/g,'')}).join('\n');if(window.shareText)window.shareText(t,sb)}}
+function setTab(t){rtab=t;$('lkt').hidden=t!=='k';$('lrep').hidden=t!=='r';$('ltabs').querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-k')===t)})}
+if($('ltabs'))$('ltabs').addEventListener('click',function(e){var b=e.target.closest('[data-k]');if(b)setTab(b.getAttribute('data-k'))});
 function drawCats(){var L=type==='e'?EC:IC;$('lcg').innerHTML=L.map(function(c,k){return '<button type="button" data-c="'+k+'"'+(k===cat?' class="on"':'')+'><span>'+c[1]+'</span>'+c[0]+'</button>'}).join('');
  $('lt').innerHTML='<button type="button" data-t="e"'+(type==='e'?' class="on"':'')+'>지출</button><button type="button" data-t="i"'+(type==='i'?' class="on"':'')+'>수입</button>'}
 $('lt').addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(!b)return;type=b.getAttribute('data-t');cat=0;drawCats()});

@@ -25,7 +25,9 @@
 <div class="lgh"><div class="lgm"><button type="button" id="lprev" aria-label="이전 달">‹</button><b id="lm"></b><button type="button" id="lnext" aria-label="다음 달">›</button></div>
 <div class="lgs">이번 달 지출</div><div class="lgb"><span id="lex">0</span><small>원</small></div>
 <div class="lgr"><div><span>수입</span><b id="lin">0</b></div><div><span>잔액</span><b id="lba">0</b></div></div><div id="lbg"></div></div>
-<div class="card lgc lcal"><div class="ch"><button type="button" class="ib" id="lcp" aria-label="이전 달">‹</button><strong id="lct"></strong><button type="button" class="ib" id="lcn" aria-label="다음 달">›</button></div>
+<div class="seg lgt rtabs" id="ltabs"><button type="button" data-k="k" class="on">기록</button><button type="button" data-k="r">📊 리포트</button></div>
+<div id="lrep" hidden></div>
+<div id="lkt"><div class="card lgc lcal"><div class="ch"><button type="button" class="ib" id="lcp" aria-label="이전 달">‹</button><strong id="lct"></strong><button type="button" class="ib" id="lcn" aria-label="다음 달">›</button></div>
 <div class="cw"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div><div class="cg" id="lcgr"></div>
 <div class="lcl"><span class="lci">● 수입</span><span class="lce">● 지출</span></div><p class="lcs" id="lcsel"></p></div>
 <div class="card lgc"><div class="seg lgt" id="lt"></div>
@@ -38,8 +40,8 @@
 <p class="ok" id="lok" hidden></p><button type="button" id="lsave" class="lgsv">저장하기</button></div>
 <div class="card lgc"><h3 class="hh" style="margin-top:0">내역</h3><div id="llist"></div></div>
 <div class="card lgc"><h3 class="hh" style="margin-top:0">🔁 반복 내역</h3><div id="lrec"></div></div>
-<div class="card lgc"><h3 class="hh" style="margin-top:0">분류별 지출</h3><div id="lcat"></div></div>
 <div class="card lgc"><h3 class="hh" style="margin-top:0">월 예산</h3><input id="lbud" inputmode="numeric" placeholder="예: 1,500,000 (비우면 사용 안 함)" autocomplete="off"></div>
+</div>
 <div class="card lgc" id="lsync"></div>
 <div class="card lgc"><h3 class="hh" style="margin-top:0">백업</h3><div class="btnrow"><button type="button" class="sec" id="lcsv">엑셀용 CSV</button><button type="button" class="sec" id="lexp">백업 저장</button><label class="sec fl">백업 불러오기<input type="file" id="limp" accept=".json,application/json" hidden></label></div></div>
 <div class="ad"><!-- 광고 영역 --></div>

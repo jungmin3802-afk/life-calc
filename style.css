@@ -348,6 +348,16 @@ details.menu .in a{display:flex;align-items:center}
 .duwr{position:relative;margin:0 0 18px}.duwr .duw{margin:0}
 .duun{position:absolute;z-index:2;right:12px;top:10px;margin:0;width:auto;padding:4px 10px;border:0;border-radius:999px;background:rgba(0,0,0,.35);color:#fff;font-size:.72rem;font-weight:700;cursor:pointer}
 
+.rtabs{margin:0 0 18px}
+.rsum .rs3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}.rsum .rs3 span{display:block;font-size:.8rem;color:var(--sub)}.rsum .rs3 b{font-size:1.1rem}.rsum .in{color:#E5484D}.rsum .ex{color:#3B82F6}
+.rcm{margin:14px 0 0;text-align:center;line-height:1.6}.up{color:#E5484D;font-style:normal}.dn{color:#3B82F6;font-style:normal}
+.rdn{display:flex;justify-content:center;margin:6px 0 12px}.rt1{font-size:9px;fill:var(--sub)}.rt2{font-size:14px;font-weight:800;fill:var(--ink)}
+.rlg{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line)}.rlg i{width:12px;height:12px;border-radius:4px;flex-shrink:0}.rlg .rn{flex:1;font-weight:600}.rlg .rv{font-size:.85rem;color:var(--sub);text-align:right}.rlg em{font-style:normal;font-weight:700}
+.rdb{display:flex;align-items:flex-end;gap:2px;height:110px}.rdb i{flex:1;background:color-mix(in srgb,#3B82F6 45%,transparent);border-radius:3px 3px 0 0;min-width:2px}.rdb i.mx{background:#3B82F6}
+.rdx{display:flex;justify-content:space-between;font-size:.72rem;color:var(--sub);margin-top:6px}
+.rin{margin:0 0 14px;padding-left:20px;line-height:1.8}.rin li{margin-bottom:6px}
+.ryr{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end}.rym{text-align:center}.ryb{height:90px;display:flex;align-items:flex-end;gap:2px;justify-content:center}.ryb i{width:45%;border-radius:3px 3px 0 0;min-height:0}.ryb .yi{background:#E5484D}.ryb .ye{background:#3B82F6}.rym span{display:block;font-size:.7rem;color:var(--sub);margin-top:4px}.rym span.on{color:var(--ink);font-weight:800}
+#lrep .card{margin-bottom:18px}
 .gt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
 .gt th,.gt td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
 .gt th{background:var(--bg);font-weight:700}
