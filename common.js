@@ -27,20 +27,25 @@ Array.prototype.forEach.call(document.querySelectorAll('.thp button'),function(x
 var fav=LS.get('fav',[]),rec=LS.get('rec',[]);
 if(slug&&byS[slug]){rec=[slug].concat(rec.filter(function(x){return x!==slug})).slice(0,6);LS.set('rec',rec)}
 var fb=$('favbtn');
-if(fb&&slug){var on=fav.indexOf(slug)>=0;fb.setAttribute('aria-pressed',on);fb.textContent=on?'★':'☆';
- fb.onclick=function(){fav=LS.get('fav',[]);var i=fav.indexOf(slug);if(i>=0)fav.splice(i,1);else fav.unshift(slug);LS.set('fav',fav);var o=fav.indexOf(slug)>=0;fb.setAttribute('aria-pressed',o);fb.textContent=o?'★':'☆'}}
+if(fb&&slug){var on=fav.indexOf(slug)>=0;fb.setAttribute('aria-pressed',on);fb.textContent='📌';
+ fb.onclick=function(){fav=LS.get('fav',[]);var i=fav.indexOf(slug);if(i>=0)fav.splice(i,1);else fav.unshift(slug);LS.set('fav',fav);var o=fav.indexOf(slug)>=0;fb.setAttribute('aria-pressed',o);fb.textContent='📌'}}
 function app(c){return'<a class="app" href="'+c.s+'.html"><span class="ic" style="--g1:'+c.a+';--g2:'+c.b+'"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+c.i+'</svg></span><span class="lb">'+c.l+'</span></a>'}
 function mini(id,title,list){var el=$(id);if(!el)return;var L=list.filter(function(s){return byS[s]});if(!L.length){el.innerHTML='';return}
  el.innerHTML='<section class="cat folder"><h2>'+title+'</h2><div class="apps">'+L.map(function(s){return app(byS[s])}).join('')+'</div></section>'}
-mini('favs','즐겨찾기',fav);mini('recs','최근 본 계산기',rec);
+var pe=false;
+function pins(){var el=$('favs');if(!el)return;var L=fav.filter(function(x){return byS[x]});if(!L.length){el.innerHTML='';pe=false;return}
+ el.innerHTML='<section class="cat folder'+(pe?' pedit':'')+'"><h2 class="pinh"><span>📌 상단 고정</span><button type="button" id="pedit">'+(pe?'완료':'편집')+'</button></h2><div class="apps">'+L.map(function(x){var c=byS[x];return'<div class="pw">'+app(c)+(pe?'<button type="button" class="pun" data-u="'+x+'" aria-label="'+c.l+' 고정 해제">고정 해제</button>':'')+'</div>'}).join('')+'</div></section>';
+ $('pedit').onclick=function(){pe=!pe;pins()};
+ Array.prototype.forEach.call(el.querySelectorAll('.pun'),function(b){b.onclick=function(e){e.preventDefault();e.stopPropagation();fav=LS.get('fav',[]).filter(function(x){return x!==b.getAttribute('data-u')});LS.set('fav',fav);pins()}})}
+window.LCpins=pins;pins();mini('recs','최근 본 계산기',rec);
 
 /* 꾹 눌러 즐겨찾기 */
 (function(){if(!$('catlist'))return;var menu=null,t=null,sx=0,sy=0,sup=false;
 function hide(){if(menu){menu.remove();menu=null}}
 function show(a){hide();var h=(a.getAttribute('href')||'').replace('.html',''),f=LS.get('fav',[]),on=f.indexOf(h)>=0,r=a.getBoundingClientRect();
- menu=document.createElement('div');menu.id='favm';menu.innerHTML='<button type="button">'+(on?'★ 즐겨찾기 해제':'⭐ 즐겨찾기 맨 위에 추가')+'</button>';document.body.appendChild(menu);
+ menu=document.createElement('div');menu.id='favm';menu.innerHTML='<button type="button">'+(on?'📌 고정 해제':'📌 맨 위에 고정')+'</button>';document.body.appendChild(menu);
  var w=menu.offsetWidth,x=Math.max(8,Math.min(innerWidth-w-8,r.left+r.width/2-w/2)),y=r.top-menu.offsetHeight-8;if(y<8)y=r.bottom+8;menu.style.left=x+'px';menu.style.top=y+'px';
- menu.firstChild.onclick=function(e){e.stopPropagation();var g=LS.get('fav',[]),i=g.indexOf(h);if(i>=0)g.splice(i,1);else g.unshift(h);LS.set('fav',g);fav=g;hide();mini('favs','즐겨찾기',fav);if(navigator.vibrate)try{navigator.vibrate(15)}catch(_){}}}
+ menu.firstChild.onclick=function(e){e.stopPropagation();var g=LS.get('fav',[]),i=g.indexOf(h);if(i>=0)g.splice(i,1);else g.unshift(h);LS.set('fav',g);fav=g;hide();pins();if(navigator.vibrate)try{navigator.vibrate(15)}catch(_){}}}
 document.addEventListener('pointerdown',function(e){var a=e.target.closest&&e.target.closest('a.app');if(menu&&!e.target.closest('#favm'))hide();if(!a)return;sx=e.clientX;sy=e.clientY;sup=false;clearTimeout(t);t=setTimeout(function(){sup=true;show(a)},450)});
 document.addEventListener('pointermove',function(e){if(t&&(Math.abs(e.clientX-sx)>8||Math.abs(e.clientY-sy)>8)){clearTimeout(t);t=null}});
 ['pointerup','pointercancel'].forEach(function(n){document.addEventListener(n,function(){clearTimeout(t);t=null})});
