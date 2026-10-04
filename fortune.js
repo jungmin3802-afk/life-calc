@@ -28,7 +28,7 @@ function make(b){
  total=Math.max(40,Math.min(99,total));
  function pick(a){return a[Math.floor(r()*a.length)]}
  var z=zodiac(p[0],p[1],p[2]),c=pick(COLORS),n=[];
- while(n.length<3){var x=1+Math.floor(r()*45);if(n.indexOf(x)<0)n.push(x)}n.sort(function(a,b){return a-b});
+ while(n.length<6){var x=1+Math.floor(r()*45);if(n.indexOf(x)<0)n.push(x)}n.sort(function(a,b){return a-b});
  return {z:z,star:star(p[1],p[2]),total:total,tt:pick(TXT.total[LV(total)]),
   cats:[['💰','재물운',money,pick(TXT.money[LV(money)])],['💕','애정운',love,pick(TXT.love[LV(love)])],['🍀','건강운',health,pick(TXT.health[LV(health)])],['💼','직장·학업운',work,pick(TXT.work[LV(work)])]],
   color:c,nums:n,dir:pick(DIR),time:(6+Math.floor(r()*16))+'시',tip:pick(TIP)}}
@@ -37,7 +37,7 @@ function render(f){
  var h='<div class="fh"><span class="fz">'+ZE[f.z]+'</span><div><b>'+Z[f.z]+'띠 · '+f.star+'</b><small>'+ds+' 운세</small></div></div>';
  h+='<div class="fscore"><span>'+EMO[LV(f.total)]+'</span><div><small>오늘의 총운</small><b>'+f.total+'점</b></div></div><p class="ftt"></p>';
  h+='<div class="fcats">'+f.cats.map(function(c,i){return '<div class="fc"><div class="fct"><span>'+c[0]+' '+c[1]+'</span><b>'+c[2]+'점</b></div><div class="fbar"><i style="width:'+c[2]+'%"></i></div><p data-i="'+i+'"></p></div>'}).join('')+'</div>';
- h+='<h3 class="hh">오늘의 행운</h3><div class="flk"><div><span>행운의 색</span><b><i class="dot" style="background:'+f.color[1]+'"></i>'+f.color[0]+'</b></div><div><span>행운의 숫자</span><b>'+f.nums.join(' · ')+'</b></div><div><span>좋은 방향</span><b>'+f.dir+'</b></div><div><span>좋은 시간</span><b>'+f.time+'</b></div></div>';
+ h+='<h3 class="hh">오늘의 행운</h3><div class="flk"><div><span>행운의 색</span><b><i class="dot" style="background:'+f.color[1]+'"></i>'+f.color[0]+'</b></div><div class="fwn"><span>행운의 숫자</span><b>'+f.nums.join(' · ')+'</b></div><div><span>좋은 방향</span><b>'+f.dir+'</b></div><div><span>좋은 시간</span><b>'+f.time+'</b></div></div>';
  h+='<div class="ftip"><span>💌 오늘의 한마디</span><p></p></div>';
  $('fres').innerHTML=h;$('fres').hidden=false;
  $('fres').querySelector('.ftt').textContent=f.tt;
