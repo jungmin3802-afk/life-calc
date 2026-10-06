@@ -45,11 +45,26 @@ function render(f){
  $('fres').querySelector('.ftip p').textContent=f.tip;
  $('fshare').hidden=false;
  $('fshare')._t='오늘의 운세 ('+Z[f.z]+'띠 · '+f.star+')\n총운 '+f.total+'점 — '+f.tt+'\n'+f.cats.map(function(c){return c[1]+' '+c[2]+'점'}).join(' / ')+'\n행운의 색 '+f.color[0]+', 숫자 '+f.nums.join('·')+'\n(재미로 보는 운세)\n'+location.href}
+
+var lunar=false,LF=new Intl.DateTimeFormat('en-u-ca-chinese',{timeZone:'Asia/Seoul',year:'numeric',month:'numeric',day:'numeric'});
+function pm(o){var t=String(o.month),lp=/[^0-9]/.test(t);return{n:parseInt(t,10),lp:lp}}
+function l2s(y,m,d,leap){var t0=Date.UTC(y,0,20,3),i,n;
+ for(i=0;i<430;i++){var dt=new Date(t0+i*864e5),o={};LF.formatToParts(dt).forEach(function(q){o[q.type]=q.value});
+  var q2=pm(o);if(+o.relatedYear===y&&q2.n===m&&q2.lp===!!leap&&+o.day===d){return dt.getUTCFullYear()+'-'+S.pad(dt.getUTCMonth()+1)+'-'+S.pad(dt.getUTCDate())}}
+ return null}
+function s2l(v){var p=v.split('-').map(Number),o={};LF.formatToParts(new Date(Date.UTC(p[0],p[1]-1,p[2],3))).forEach(function(q){o[q.type]=q.value});
+ var q2=pm(o);return{y:+o.relatedYear,m:q2.n,d:+o.day,leap:q2.lp}}
+function setCal(l){lunar=l;$('fcal').querySelectorAll('button').forEach(function(b){b.classList.toggle('on',(b.getAttribute('data-l')==='1')===l)});$('fleapw').hidden=!l;$('fbl').textContent=l?'음력 생년월일':'생년월일'}
+$('fcal').addEventListener('click',function(e){var b=e.target.closest('[data-l]');if(b){setCal(b.getAttribute('data-l')==='1');$('fmsg').textContent=''}});
 function go(){
  var v=$('fb').value;if(!v){$('fb').focus();$('fmsg').textContent='생년월일을 먼저 골라 주세요.';return}
- var y=+v.slice(0,4);if(y<1900||y>new Date().getFullYear()){$('fmsg').textContent='생년월일을 확인해 주세요.';return}
- $('fmsg').textContent='';S.set('lc_fortune_birth',v);render(make(v));$('fres').scrollIntoView({behavior:'smooth',block:'start'})}
+ var y=+v.slice(0,4),ly=null,note='';if(y<1900||y>new Date().getFullYear()){$('fmsg').textContent='생년월일을 확인해 주세요.';return}
+ if(lunar){var q=v.split('-').map(Number),sv2=l2s(q[0],q[1],q[2],$('fleap').checked);
+  if(!sv2){$('fmsg').textContent=$('fleap').checked?'그 해에는 해당 윤달이 없어요. 윤달 체크를 확인해 주세요.':'없는 음력 날짜예요. 그 달이 29일까지인지 확인해 주세요.';return}
+  ly={v:v,leap:$('fleap').checked};v=sv2;note='음력 '+q[0]+'.'+q[1]+'.'+q[2]+($('fleap').checked?'(윤)':'')+' → 양력 '+v.replace(/-/g,'.')}
+ $('fmsg').textContent='';if(note){$('fmsg').innerHTML='<span class="fconv"></span>';$('fmsg').firstChild.textContent=note}
+ S.set('lc_fortune_birth',v);S.set('lc_fortune_lunar',ly);render(make(v));$('fres').scrollIntoView({behavior:'smooth',block:'start'})}
 $('go').onclick=go;
 $('fshare').onclick=function(){if(window.shareText)window.shareText(this._t,this)};
-var sv=S.get('lc_fortune_birth',null);if(sv){$('fb').value=sv;render(make(sv))}
+var sv=S.get('lc_fortune_birth',null),sl=S.get('lc_fortune_lunar',null);if(sv){if(sl&&sl.v){setCal(true);$('fb').value=sl.v;$('fleap').checked=!!sl.leap;$('fmsg').innerHTML='<span class="fconv"></span>';var q=sl.v.split('-').map(Number);$('fmsg').firstChild.textContent='음력 '+q[0]+'.'+q[1]+'.'+q[2]+(sl.leap?'(윤)':'')+' → 양력 '+sv.replace(/-/g,'.')}else $('fb').value=sv;render(make(sv))}
 })();
