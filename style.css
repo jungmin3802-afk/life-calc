@@ -366,6 +366,14 @@ details.menu .in a{display:flex;align-items:center}
 .s3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.s3 div{background:var(--bg);border-radius:14px;padding:10px 6px;text-align:center}.s3 span{display:block;font-size:.72rem;color:var(--sub)}.s3 b{font-size:1.2rem}
 .swk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}.sb b{display:block;height:1.1em;font-size:.62rem;color:var(--sub);font-weight:600}.sbi{height:100px;display:flex;align-items:flex-end;justify-content:center}.sbi i{display:block;width:60%;min-height:3px;background:color-mix(in srgb,#16A34A 40%,transparent);border-radius:4px 4px 0 0}.sbi i.ok{background:#16A34A}.sb span{display:block;font-size:.75rem;color:var(--sub);margin-top:4px}.sb span.on{color:var(--ink);font-weight:800}
 .fcalx{margin:0}#fcal{margin:6px 0 10px}.fleap{margin:0 0 8px}.fconv{color:var(--acc);font-weight:700}
+.qc{--pk:#8B5CF6}.qn{background:#8B5CF6;margin-bottom:18px}
+#qcard{background:linear-gradient(145deg,#8B5CF6,#5B3FD1);color:#fff;border:0;padding:24px 22px;margin-bottom:14px}
+.qd{font-size:.85rem;opacity:.85}.qm{font-size:4rem;line-height:.8;opacity:.4;margin-top:10px}
+.qt{font-size:1.4rem;font-weight:700;line-height:1.6;margin:4px 0 14px;word-break:keep-all}.qw{opacity:.9;margin:0 0 18px;text-align:right;font-weight:600}
+.qb{display:flex;gap:8px}.qb .sec{background:rgba(255,255,255,.18);border-color:transparent;color:#fff;flex:1}.qb .sec.on{background:#fff;color:#5B3FD1}
+#qcard.pop{animation:qpop .35s ease}@keyframes qpop{from{opacity:.2;transform:translateY(8px)}to{opacity:1;transform:none}}
+.qi{position:relative;padding:10px 34px 10px 0;border-bottom:1px dashed var(--line)}.qi p{margin:0 0 4px;line-height:1.6;word-break:keep-all}.qi small{color:var(--sub)}.qi .x{position:absolute;right:0;top:6px}
+.qc{display:block!important}
 .gt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
 .gt th,.gt td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
 .gt th{background:var(--bg);font-weight:700}
