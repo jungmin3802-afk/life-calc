@@ -17,11 +17,12 @@ function fmtRate(x){return x.toLocaleString('ko-KR',{maximumFractionDigits:x>=10
 function kst(d){return d.toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false})}
 function amount(){var a=parseFloat(($('amt').value||'').replace(/,/g,''));return isFinite(a)?a:NaN}
 function curBtn(id,c){var i=info(c);$(id).innerHTML='<span>'+i[2]+' '+c+'</span><small>'+i[1]+'</small>'}
+function fit(el){el.style.fontSize='';var s=1.7;el.style.fontSize=s+'rem';while(el.scrollWidth>el.clientWidth+1&&s>0.85){s-=0.08;el.style.fontSize=s+'rem'}}
 function calc(){
  curBtn('bfrom',from);curBtn('bto',to);
  if(!R){$('res').textContent='…';return}
  var a=amount(),one=1/rateOf(from)*rateOf(to);
- $('res').textContent=isFinite(a)?fmt(a/rateOf(from)*rateOf(to),to):'0';
+ $('res').textContent=isFinite(a)?fmt(a/rateOf(from)*rateOf(to),to):'0';fit($('res'));fit($('amt'));
  var fi=info(from),ti=info(to);
  $('hero').textContent='1 '+from+' = '+fmtRate(one)+' '+to;
  $('nt').textContent='국제 시장 환율 기준이며 은행·환전소의 실제 매매 환율과 수수료는 다릅니다.';
