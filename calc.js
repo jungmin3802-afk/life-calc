@@ -282,6 +282,34 @@ C.push(
 );
 })();
 
+// ---- 만나이·띠: 양력/음력/음력(윤달) 선택 ----
+(function(){
+var LF=new Intl.DateTimeFormat('en-u-ca-chinese',{timeZone:'Asia/Seoul',year:'numeric',month:'numeric',day:'numeric'});
+function pm(o){var t=String(o.month);return{n:parseInt(t,10),lp:/[^0-9]/.test(t)}}
+function l2s(y,m,d,leap){var t0=Date.UTC(y,0,20,3);
+ for(var i=0;i<430;i++){var dt=new Date(t0+i*864e5),o={};LF.formatToParts(dt).forEach(function(q){o[q.type]=q.value});
+  var q2=pm(o);if(+o.relatedYear===y&&q2.n===m&&q2.lp===!!leap&&+o.day===d)return new Date(Date.UTC(dt.getUTCFullYear(),dt.getUTCMonth(),dt.getUTCDate()))}
+ return null}
+var Zn=['원숭이','닭','개','돼지','쥐','소','호랑이','토끼','용','뱀','말','양'];
+var pad=function(n){return n<10?'0'+n:''+n};
+for(var i=0;i<C.length;i++){if(C[i].k!=='age')continue;
+ C[i].f=[['c','달력 기준','sel',['양력','음력','음력 (윤달)']],['b','생년월일 (음력이면 음력 날짜)','date']];
+ C[i].nt='띠는 입춘(2월 4일) 기준 간이 계산입니다. 1~2월생은 음력 설 기준과 다를 수 있습니다. 음력은 양력으로 바꿔서 계산합니다. 기준일은 오늘입니다.';
+ C[i].run=function(v){if(!v.b)return null;var raw=v.b,b=raw,lunarTxt=null;
+  if(v.c>0){b=l2s(raw.getUTCFullYear(),raw.getUTCMonth()+1,raw.getUTCDate(),v.c===2);
+   if(!b)return[['안내',v.c===2?'그 해에는 해당 윤달이 없어요. 달력 기준을 확인해 주세요':'없는 음력 날짜예요. 그 달이 29일까지인지 확인해 주세요',1]];
+   lunarTxt='음력 '+raw.getUTCFullYear()+'.'+pad(raw.getUTCMonth()+1)+'.'+pad(raw.getUTCDate())+(v.c===2?' (윤달)':'')}
+  var t=TD(),y=t.getUTCFullYear()-b.getUTCFullYear(),a=y,z=b.getUTCFullYear();
+  if(b.getTime()>t.getTime())return null;
+  if((t.getUTCMonth()-b.getUTCMonth()||t.getUTCDate()-b.getUTCDate())<0)a--;
+  if(b.getUTCMonth()<1||(b.getUTCMonth()==1&&b.getUTCDate()<4))z--;
+  var zz=Zn[((z%12)+12)%12]+'띠',sol=b.getUTCFullYear()+'.'+pad(b.getUTCMonth()+1)+'.'+pad(b.getUTCDate());
+  var rows=[];
+  if(lunarTxt){rows.push(['입력한 생일',lunarTxt]);rows.push(['양력 생년월일',sol+' ('+zz+')',1])}
+  else rows.push(['생년월일',sol+' ('+zz+')',1]);
+  rows.push(['만 나이',a+'세'],['연 나이',y+'세'],['세는 나이',(y+1)+'세']);return rows}}
+})();
+
 var cur=C.findIndex(function(c){return c.k===window.CALC_KEY});var c=C[cur];
 function build(){var h='';
  document.getElementById('nt').textContent=c.nt;
