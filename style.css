@@ -374,6 +374,18 @@ details.menu .in a{display:flex;align-items:center}
 #qcard.pop{animation:qpop .35s ease}@keyframes qpop{from{opacity:.2;transform:translateY(8px)}to{opacity:1;transform:none}}
 .qi{position:relative;padding:10px 34px 10px 0;border-bottom:1px dashed var(--line)}.qi p{margin:0 0 4px;line-height:1.6;word-break:keep-all}.qi small{color:var(--sub)}.qi .x{position:absolute;right:0;top:6px}
 .qc{display:block!important}
+.mmc{padding:14px}.mmc+.mmc{margin-top:14px}.mmtop{display:flex;gap:10px;align-items:center}.mmtop input{flex:1;min-width:0;margin:0}.mmtop .lgsv{width:auto!important;margin:0!important;padding:0 16px;white-space:nowrap;min-height:46px}
+.mmcn{color:var(--sub);font-size:.82rem;padding:10px 4px 0}
+.mmh{font-size:.8rem;color:var(--sub);font-weight:700;padding:14px 4px 2px}
+.mmrow{display:block;width:100%;text-align:left;margin:0;padding:12px 8px 12px 16px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;color:var(--ink);font-family:inherit;cursor:pointer;position:relative}.mmrow:active{opacity:.6}.mmrow:before{content:"";position:absolute;left:2px;top:12px;bottom:12px;width:4px;border-radius:2px;background:var(--mc,transparent)}
+.mmrow b{display:block;font-size:1.02rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mmrow small{display:flex;gap:10px;color:var(--sub);font-size:.84rem;margin-top:4px}.mmrow small span:first-child{flex-shrink:0}.mmrow small span:last-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mmem{text-align:center;color:var(--sub);padding:34px 0;line-height:1.7;margin:0}
+.mmbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}.mmsp{flex:1}
+.mmb{margin:0!important;width:auto!important;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-family:inherit;font-size:.95rem;font-weight:700;cursor:pointer}.mmb.on{background:color-mix(in srgb,var(--acc) 22%,var(--bg));border-color:var(--acc)}.mmb:active{transform:scale(.96)}
+.mmcol{display:flex;gap:10px;margin-bottom:12px}.mmcol button{margin:0!important;width:30px!important;height:30px;padding:0;border-radius:50%;border:2px solid transparent;background:var(--mc);cursor:pointer}.mmcol button.none{background:var(--bg);border:2px solid var(--line)}.mmcol button.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--card) inset}
+#mmta{display:block;width:100%;box-sizing:border-box;min-height:48vh;margin:0;padding:14px;border:0;border-radius:14px;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.7;font-family:inherit;resize:none}
+.mmft{color:var(--sub);font-size:.82rem;padding:10px 4px 0;text-align:right}
+
 .gt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
 .gt th,.gt td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
 .gt th{background:var(--bg);font-weight:700}
