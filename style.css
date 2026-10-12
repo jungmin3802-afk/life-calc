@@ -399,3 +399,5 @@ details.menu .in a{display:flex;align-items:center}
 .asof{color:var(--sub);font-size:.85rem}
 article.g h2{margin-top:26px}
 .wall ~ footer{padding-bottom:110px}
+.lng{flex:none;min-width:34px;height:32px;padding:0 12px;border-radius:16px;border:1px solid var(--line,rgba(127,127,127,.35));background:transparent;color:inherit;font:700 12px/1 inherit;cursor:pointer}.lng.h{margin-left:auto;margin-right:6px}.lng.p{display:block;margin:0 0 10px auto}.lng.f{display:block;margin:12px auto 0}
+html[data-lang=en] .kr{display:none}html[data-lang=en] .kw input{padding-right:12px!important}

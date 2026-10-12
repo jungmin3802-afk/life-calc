@@ -229,7 +229,7 @@ C.push({k:'bmr',n:'기초대사량',nt:'미플린-세인트 지어 공식을 쓴
   ['c','활동량','sel',['거의 안 움직임','가벼운 활동 (주 1~3회)','보통 (주 3~5회)','활발 (주 6~7회)','매우 활발 (육체노동·선수)']],['g','목표','sel',['체중 감량','체중 유지','체중 증량']]],
  run:function(v){if(!v.a||!v.h||!v.w)return null;var b=10*v.w+6.25*v.h-5*v.a+(v.x==0?5:-161),f=[1.2,1.375,1.55,1.725,1.9][v.c],t=b*f,
   g=v.g==0?Math.max(t-500,b):v.g==2?t+300:t,lb=['체중 감량','체중 유지','체중 증량'][v.g];
-  return[['기초대사량 (BMR)',won(b)+' kcal'],['활동량 반영 유지 칼로리',won(t)+' kcal'],['하루 목표 칼로리 ('+lb+')',won(g)+' kcal',1]]}});
+  return[['기초대사량 (BMR)',Math.round(b).toLocaleString('ko-KR')+' kcal'],['활동량 반영 유지 칼로리',Math.round(t).toLocaleString('ko-KR')+' kcal'],['하루 목표 칼로리 ('+lb+')',Math.round(g).toLocaleString('ko-KR')+' kcal',1]]}});
 
 (function(){
 function nn(x){return Math.round(x).toLocaleString('ko-KR')}
