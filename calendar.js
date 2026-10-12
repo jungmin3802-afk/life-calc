@@ -43,6 +43,32 @@ function hol(y){
   if(d.getFullYear()===y)add(d,'대체공휴일')});
  return HC[y]=H}
 function holName(s){var y=+s.slice(0,4);return hol(y)[s]||''}
+
+// ---- 기념일 (공휴일 아님) ----
+var ANN_ON=true;try{ANN_ON=localStorage.getItem('calAnn')!=='0'}catch(_){}
+var AC={};
+function sunLon(jd){var T=(jd-2451545)/36525,L0=280.46646+36000.76983*T,M=(357.52911+35999.05029*T)*Math.PI/180,
+ C=(1.914602-.004817*T)*Math.sin(M)+.019993*Math.sin(2*M)+.000289*Math.sin(3*M),O=(125.04-1934.136*T)*Math.PI/180;
+ return(((L0+C-.00569-.00478*Math.sin(O))%360)+360)%360}
+function termDay(y,lon,mo){ // lon 도에 태양이 도달하는 한국 날짜(KST)
+ var a=Date.UTC(y,mo-1,1)/864e5+2440587.5-1,b=a+40;
+ for(var i=0;i<50;i++){var c=(a+b)/2,v=sunLon(c),d=((v-lon+540)%360)-180;if(d<0)a=c;else b=c}
+ var t=new Date((((a+b)/2)-2440587.5)*864e5+9*36e5);return new Date(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate())}
+function stemDay(d){var j=Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)+2440588;return((j+9)%10+10)%10}
+function nextGyeong(d,n){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()),c=0;
+ for(;;x=new Date(x.getFullYear(),x.getMonth(),x.getDate()+1)){if(stemDay(x)===6){c++;if(c===n)return x}}}
+function annMap(y){
+ if(AC[y])return AC[y];var A={};
+ function add(d,n){var k=ymd(d);if(!A[k])A[k]=n}
+ add(new Date(y,1,14),'밸런타인데이');add(new Date(y,2,14),'화이트데이');add(new Date(y,4,8),'어버이날');add(new Date(y,4,15),'스승의 날');
+ add(new Date(y,10,11),'빼빼로데이');add(new Date(y,11,24),'크리스마스 이브');
+ var f=new Date(y,4,1),dw=f.getDay(),first=1+((8-dw)%7);add(new Date(y,4,first+14),'성년의 날');
+ try{add(termDay(y,315,2),'입춘');add(termDay(y,270,12),'동지');
+  var ha=termDay(y,90,6),ip=termDay(y,135,8);add(nextGyeong(ha,3),'초복');add(nextGyeong(ha,4),'중복');add(nextGyeong(ip,1),'말복');
+  var L=lunarMap(y);Object.keys(L).forEach(function(k){var l=L[k];if(l[0]===1&&l[1]===15){var p=k.split('-');add(new Date(+p[0],+p[1]-1,+p[2]),'정월대보름')}})}catch(_){}
+ return AC[y]=A}
+var ANS={'밸런타인데이':'밸런타인','화이트데이':'화이트데이','스승의 날':'스승의날','성년의 날':'성년의날','크리스마스 이브':'이브','정월대보름':'대보름'};
+function annName(s){if(!ANN_ON)return '';return annMap(+s.slice(0,4))[s]||''}
 // ---- 생일 (양력/음력, 매년 반복) ----
 var LF=null,BC={};
 function lunarToSolar(m,d,leap,Y){
@@ -84,16 +110,17 @@ function drawGrid(){
  var first=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate(),h='';
  for(var i=0;i<first;i++)h+='<span class="cc e"></span>';
  for(var d=1;d<=n;d++){
-  var s=y+'-'+pad(m+1)+'-'+pad(d),dt=new Date(y,m,d),w=dt.getDay(),hn=holName(s),ev=evOn(s),di=D.diary[s];
+  var s=y+'-'+pad(m+1)+'-'+pad(d),dt=new Date(y,m,d),w=dt.getDay(),hn=holName(s),an=annName(s),ev=evOn(s),di=D.diary[s];
   var cls='cc'+(s===ymd(today)?' td':'')+(s===sel?' sl':'')+(w===0||hn?' su':w===6?' sa':'');
   var dots='';ev.slice(0,3).forEach(function(e){dots+=isSh(e)?'<i class="shi" style="border-color:'+e.color+'"></i>':'<i style="background:'+e.color+'"></i>'});
-  h+='<button type="button" class="'+cls+'" data-d="'+s+'" aria-label="'+(m+1)+'월 '+d+'일'+(hn?' '+hn:'')+(ev.length?' 일정 '+ev.length+'개':'')+'"><b>'+d+'</b><em>'+(hn?hn.replace(' 연휴',''):'')+'</em><span class="dt">'+dots+'</span></button>'}
- $('cg').innerHTML=h}
+  h+='<button type="button" class="'+cls+'" data-d="'+s+'" aria-label="'+(m+1)+'월 '+d+'일'+(hn?' '+hn:an?' '+an:'')+(ev.length?' 일정 '+ev.length+'개':'')+'"><b>'+d+'</b>'+(hn?'<em>'+hn.replace(' 연휴','')+'</em>':an?'<em class="an">'+(ANS[an]||an)+'</em>':'<em></em>')+'<span class="dt">'+dots+'</span></button>'}
+ $('cg').innerHTML=h;
+ if(!$('ant')){var lb=document.createElement('label');lb.className='anl';lb.innerHTML='<input type="checkbox" id="ant"> 기념일 표시';$('cg').insertAdjacentElement('afterend',lb);$('ant').checked=ANN_ON;$('ant').onchange=function(){ANN_ON=this.checked;try{localStorage.setItem('calAnn',ANN_ON?'1':'0')}catch(_){}drawGrid();drawDay()}}}
 function drawDay(){
- var p=sel.split('-'),dt=new Date(+p[0],+p[1]-1,+p[2]),hn=holName(sel),ev=evOn(sel),di=D.diary[sel]||{};
+ var p=sel.split('-'),dt=new Date(+p[0],+p[1]-1,+p[2]),hn=holName(sel),an=annName(sel),ev=evOn(sel),di=D.diary[sel]||{};
  var diff=Math.round((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-new Date(today.getFullYear(),today.getMonth(),today.getDate()))/864e5);
  var dd=diff===0?'오늘':diff>0?'D-'+diff:'D+'+(-diff);
- var h='<div class="dh"><div><strong>'+(+p[1])+'월 '+(+p[2])+'일 ('+WD[dt.getDay()]+')</strong>'+(hn?' <span class="hn">'+hn+'</span>':'')+'</div><span class="dd">'+dd+'</span></div>';
+ var h='<div class="dh"><div><strong>'+(+p[1])+'월 '+(+p[2])+'일 ('+WD[dt.getDay()]+')</strong>'+(hn?' <span class="hn">'+hn+'</span>':an?' <span class="hn an">'+an+'</span>':'')+'</div><span class="dd">'+dd+'</span></div>';
  h+='<h3 class="hh">일정</h3>';
  if(!ev.length)h+='<p class="note">등록된 일정이 없습니다.</p>';
  ev.forEach(function(e){

@@ -394,6 +394,9 @@ details.menu .in a{display:flex;align-items:center}
 .btnrow .sec,.btnrow .sh{padding:9px 10px}
 button,.sec,.sh{word-break:keep-all}
 
+.cc em.an{color:var(--acc);font-weight:600}.hn.an{background:rgba(60,199,166,.16);color:var(--acc)}
+.anl{display:flex;align-items:center;gap:8px;margin:10px 4px 0;font-size:.85rem;color:var(--sub);cursor:pointer}.anl input{width:18px;height:18px;margin:0;accent-color:var(--acc)}
+
 .gt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
 .gt th,.gt td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
 .gt th{background:var(--bg);font-weight:700}
