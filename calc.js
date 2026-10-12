@@ -318,7 +318,7 @@ C.push({k:'gift',n:'증여세',nt:'간이 계산입니다. 부담부증여, 비�
     ['a','이번 증여재산 (원)','num'],
     ['p','10년 내 같은 사람에게 받은 증여 합계 (원)','num',0],
     ['pt','그때 이미 낸 증여세 (원)','num',0],
-    ['m','혼인·출산 추가공제 (최대 1억)','sel',['해당 없음','해당']],
+    ['m','혼인·출산 추가공제 (최대 1억)','sel',['해당 없음','해당'],'혼인신고일 전후 2년 이내 또는 자녀 출생·입양 후 2년 이내 · 부모·조부모가 성년 자녀에게 증여할 때만 · 혼인+출산 합쳐 최대 1억'],
     ['g','세대 생략 (조부모→손자녀)','sel',['아니오','예']],
     ['d','기한 내 신고 (3개월 이내)','sel',['예 (3% 공제)','아니오']]],
  run:function(v){if(!v.a)return null;var r=v.r|0,tot=v.a+(v.p||0);
@@ -345,16 +345,23 @@ C.push({k:'gift',n:'증여세',nt:'간이 계산입니다. 부담부증여, 비�
 })();
 
 var cur=C.findIndex(function(c){return c.k===window.CALC_KEY});var c=C[cur];
+function korW(t){var n=Math.floor(Number(String(t).replace(/[^\d]/g,'')));if(!n||n>=1e16)return'';
+ var D='영일이삼사오육칠팔구'.split(''),U=['','십','백','천'],B=['','만','억','조'],o=[],g=0;
+ while(n>0){var q=n%10000;n=Math.floor(n/10000);if(q){var p='',k=0;while(q>0){var d=q%10;if(d)p=(d==1&&k>0?'':D[d])+U[k]+p;q=Math.floor(q/10);k++}o.unshift(p+B[g])}g++}
+ return o.join('')+'원'}
 function build(){var h='';
  document.getElementById('nt').textContent=c.nt;
  c.f.forEach(function(f){h+='<div class="fld" id="w_'+f[0]+'"><label for="f_'+f[0]+'">'+f[1]+'</label>';
   if(f[2]=='sel')h+='<select id="f_'+f[0]+'">'+f[3].map(function(o,k){return'<option value="'+k+'">'+o+'</option>'}).join('')+'</select>';
   else if(f[2]=='txt')h+='<input id="f_'+f[0]+'" autocomplete="off" placeholder="'+f[3]+'">';
   else if(f[2]=='date')h+='<input id="f_'+f[0]+'" type="date">';
-  else h+='<input id="f_'+f[0]+'" inputmode="decimal" value="'+(f[3]!==undefined?Number(f[3]).toLocaleString('ko-KR'):'')+'">';
+  else{var kw=f[1].indexOf('원')>=0;h+=(kw?'<div class="kw">':'')+'<input id="f_'+f[0]+'" inputmode="decimal" value="'+(f[3]!==undefined?Number(f[3]).toLocaleString('ko-KR'):'')+'">'+(kw?'<span class="kr" id="k_'+f[0]+'"></span></div>':'')}
+  if(f[4])h+='<div class="hp">'+f[4]+'</div>';
   h+='</div>'});
  document.getElementById('form').innerHTML=h;
  c.f.forEach(function(f){if(f[2]=='num'){var el=document.getElementById('f_'+f[0]);
+  var ke=document.getElementById('k_'+f[0]);function kr(){if(ke)ke.textContent=korW(el.value)}kr();
+  el.addEventListener('input',kr);
   el.addEventListener('input',function(){var d=el.value.replace(/[^\d.]/g,''),p=d.split('.');el.value=p[0]?Number(p[0]).toLocaleString('ko-KR')+(p.length>1?'.'+p[1]:''):d})}})}
 function vals(){var v={};
  c.f.forEach(function(f){var x=document.getElementById('f_'+f[0]).value;

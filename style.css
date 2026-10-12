@@ -386,6 +386,10 @@ details.menu .in a{display:flex;align-items:center}
 #mmta{display:block;width:100%;box-sizing:border-box;min-height:48vh;margin:0;padding:14px;border:0;border-radius:14px;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.7;font-family:inherit;resize:none}
 .mmft{color:var(--sub);font-size:.82rem;padding:10px 4px 0;text-align:right}
 
+.kw{position:relative}.kw input{padding-right:46%!important}
+.kr{position:absolute;right:12px;top:50%;transform:translateY(-50%);max-width:44%;text-align:right;font-size:12px;color:#aaa;pointer-events:none;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.hp{font-size:12px;color:#999;margin-top:5px;line-height:1.5}
+
 .gt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
 .gt th,.gt td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
 .gt th{background:var(--bg);font-weight:700}
