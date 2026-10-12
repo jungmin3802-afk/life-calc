@@ -310,6 +310,40 @@ for(var i=0;i<C.length;i++){if(C[i].k!=='age')continue;
   rows.push(['만 나이',a+'세'],['연 나이',y+'세'],['세는 나이',(y+1)+'세']);return rows}}
 })();
 
+;(function(){
+var T=[[1e8,.1,0],[5e8,.2,1e7],[1e9,.3,6e7],[3e9,.4,1.6e8],[Infinity,.5,4.6e8]];
+function gt(b){for(var i=0;i<T.length;i++)if(b<=T[i][0])return{tax:Math.max(0,b*T[i][1]-T[i][2]),rate:T[i][1]};return{tax:0,rate:0}}
+C.push({k:'gift',n:'증여세',nt:'간이 계산입니다. 부담부증여, 비상장주식 평가, 증여 시점별 과거 증여 재평가 등은 반영하지 않습니다. 신고 전 세무 전문가 또는 홈택스에서 확인하세요.',
+ f:[['r','증여받는 사람','sel',['배우자','성년 자녀·손자녀','미성년 자녀·손자녀','부모·조부모','기타 친족','타인']],
+    ['a','이번 증여재산 (원)','num'],
+    ['p','10년 내 같은 사람에게 받은 증여 합계 (원)','num',0],
+    ['pt','그때 이미 낸 증여세 (원)','num',0],
+    ['m','혼인·출산 추가공제 (최대 1억)','sel',['해당 없음','해당']],
+    ['g','세대 생략 (조부모→손자녀)','sel',['아니오','예']],
+    ['d','기한 내 신고 (3개월 이내)','sel',['예 (3% 공제)','아니오']]],
+ run:function(v){if(!v.a)return null;var r=v.r|0,tot=v.a+(v.p||0);
+  var lim=[6e8,5e7,2e7,5e7,1e7,0][r];
+  var ded=Math.min(lim,tot);
+  var mar=0,note='';
+  if(v.m==1){if(r==1)mar=Math.min(1e8,Math.max(0,tot-ded));else note='혼인·출산 공제는 부모·조부모→성년 자녀에게만 적용돼 제외했어요'}
+  var base=Math.max(0,tot-ded-mar),c=gt(base),tax=c.tax,rows=[];
+  var ex=0;if(v.g==1&&r>=1&&r<=2){var rt=(r==2&&base>2e9)?.4:.3;ex=tax*rt}
+  var cal=tax+ex,paid=v.pt||0,net=Math.max(0,cal-paid),dc=(v.d==0)?net*.03:0,fin=Math.max(0,net-dc);
+  rows.push(['10년 합산 증여재산',won(tot)]);
+  rows.push(['증여재산공제',r==5?'없음':won(ded)]);
+  if(v.m==1&&r==1)rows.push(['혼인·출산 추가공제',won(mar)]);
+  rows.push(['과세표준',won(base)]);
+  if(base>0)rows.push(['적용 세율',pct(c.rate*100,0)+'%']);
+  rows.push(['산출세액',won(tax)]);
+  if(ex>0)rows.push(['세대생략 할증',won(ex)]);
+  if(paid>0)rows.push(['이미 낸 증여세',won(paid)]);
+  if(dc>0)rows.push(['신고세액공제 (3%)',won(dc)]);
+  rows.push(['납부할 증여세',won(fin),1]);
+  if(v.a>0&&fin>0)rows.push(['이번 증여 대비 세금',pct(fin/v.a*100,2)+'%']);
+  if(note)rows.push(['안내',note]);
+  return rows}});
+})();
+
 var cur=C.findIndex(function(c){return c.k===window.CALC_KEY});var c=C[cur];
 function build(){var h='';
  document.getElementById('nt').textContent=c.nt;
