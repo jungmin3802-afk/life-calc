@@ -344,6 +344,53 @@ C.push({k:'gift',n:'증여세',nt:'간이 계산입니다. 부담부증여, 비�
   return rows}});
 })();
 
+;(function(){
+var T=[[1e8,.1,0],[5e8,.2,1e7],[1e9,.3,6e7],[3e9,.4,1.6e8],[Infinity,.5,4.6e8]];
+function gt(b){for(var i=0;i<T.length;i++)if(b<=T[i][0])return{tax:Math.max(0,b*T[i][1]-T[i][2]),rate:T[i][1]};return{tax:0,rate:0}}
+C.push({k:'inherit',n:'상속세',nt:'간이 계산입니다. 미성년자·연로자·장애인 인적공제, 동거주택·가업상속공제, 세대 생략 할증, 비상장주식 평가, 연부연납은 반영하지 않습니다. 신고 전 세무 전문가 또는 홈택스에서 확인하세요.',
+ f:[['a','상속재산 총액 (원)','num',0,'부동산·예금·주식 등 시가 기준 합계'],
+    ['db','채무·공과금 (원)','num',0],
+    ['fu','장례비 (원)','num',0,'500만~1,500만 원 범위로 자동 적용 · 입력 없으면 500만 원'],
+    ['sp','배우자','sel',['없음','있음']],
+    ['sa','배우자가 받는 상속액 (원)','num',0,'배우자가 있을 때만 · 5억 미만이어도 5억까지 공제'],
+    ['ch','자녀 수','sel',['0명','1명','2명','3명','4명','5명 이상']],
+    ['fi','순금융재산 (원)','num',0,'예금·주식 등에서 금융채무를 뺀 금액 · 금융재산공제 계산용'],
+    ['pg','10년 내 상속인에게 한 증여 (원)','num',0],
+    ['pt','그때 이미 낸 증여세 (원)','num',0],
+    ['d','기한 내 신고 (6개월 이내)','sel',['예 (3% 공제)','아니오']]],
+ run:function(v){if(!v.a)return null;
+  var ch=(v.ch|0),hs=v.sp==1,pg=v.pg||0,paid=v.pt||0;
+  var fu=Math.min(1.5e7,Math.max(5e6,v.fu||0));
+  var cost=Math.min(v.a,(v.db||0)+fu);
+  var gross=Math.max(0,v.a-cost+pg);
+  var bulk=Math.max(5e8,2e8+5e7*ch);
+  var spd=0;
+  if(hs){var legal=ch>0?gross*1.5/(1.5+ch):gross;var cap=Math.min(3e9,legal);spd=Math.min(Math.max(v.sa||0,5e8),cap)}
+  var fi=v.fi||0,fd=0;
+  if(fi>0){if(fi<=2e7)fd=fi;else if(fi<=1e8)fd=2e7;else fd=Math.min(2e8,fi*.2)}
+  var sum=bulk+spd+fd,lim=Math.max(0,gross-pg),ded=Math.min(sum,lim);
+  var base=Math.max(0,gross-ded),c=gt(base),tax=Math.floor(c.tax);
+  var cal=Math.max(0,tax-paid),dc=(v.d==0)?Math.floor(cal*.03):0,fin=Math.max(0,cal-dc);
+  var rows=[];
+  rows.push(['상속재산',won(v.a)]);
+  rows.push(['채무·공과금·장례비',won(cost)]);
+  if(pg>0)rows.push(['10년 내 증여 합산',won(pg)]);
+  rows.push(['상속세 과세가액',won(gross)]);
+  rows.push(['일괄공제',won(bulk)]);
+  if(hs)rows.push(['배우자공제',won(spd)]);
+  if(fd>0)rows.push(['금융재산공제',won(fd)]);
+  rows.push(['상속공제 합계',won(ded)+(sum>lim?' (한도 적용)':'')]);
+  rows.push(['과세표준',won(base)]);
+  if(base>0)rows.push(['적용 세율',pct(c.rate*100,0)+'%']);
+  rows.push(['산출세액',won(tax)]);
+  if(paid>0)rows.push(['이미 낸 증여세 공제',won(Math.min(paid,tax))]);
+  if(dc>0)rows.push(['신고세액공제 (3%)',won(dc)]);
+  rows.push(['납부할 상속세',won(fin),1]);
+  if(fin>0)rows.push(['상속재산 대비 세금',pct(fin/v.a*100,2)+'%']);
+  if(hs&&ch==0)rows.push(['안내','자녀가 없으면 배우자 법정상속분은 부모 등 다른 상속인에 따라 달라져 전체를 한도로 계산했어요']);
+  return rows}});
+})();
+
 var cur=C.findIndex(function(c){return c.k===window.CALC_KEY});var c=C[cur];
 function korW(t){var n=Math.floor(Number(String(t).replace(/[^\d]/g,'')));if(!n||n>=1e16)return'';
  var D='영일이삼사오육칠팔구'.split(''),U=['','십','백','천'],B=['','만','억','조'],o=[],g=0;
